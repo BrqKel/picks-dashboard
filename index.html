@@ -61,11 +61,13 @@ td.num, th.num { text-align: right; }
 .ticket { border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
 .ticket .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
 .ticket ul { list-style: none; margin: 8px 0 0; padding: 0; }
-.ticket { display: flex; flex-direction: column; }
+.ticket { display: flex; flex-direction: column; color: inherit; text-decoration: none; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
 .ticket ul { flex: 1; }
-.more { display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 13px; background: var(--page); }
-.more:hover { border-color: var(--series-1); }
-.more:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+.ticket:hover { border-color: var(--series-1); box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+.ticket:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+.ticket .hint { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.ticket:hover .hint, .ticket:focus-visible .hint { color: var(--series-1); }
+@media (prefers-reduced-motion: reduce) { .ticket { transition: none; } }
 .ticket li { display: flex; gap: 8px; justify-content: space-between; padding: 3px 0; border-top: 1px solid var(--grid); font-size: 13px; }
 .games { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); }
 .game { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
@@ -196,10 +198,10 @@ function renderTickets() {
   const ts = DATA.tickets.filter(t => (!sp || t.sport === sp) && (!wk || weekOf(t.date) === wk));
   $("tickets").innerHTML = ts.length ? ts.map(t => {
     const st = t.status === "W" ? `<span class="badge W">✓ Won ${money(t.returns)}</span>` : t.status === "L" ? `<span class="badge L">✕ Lost</span>` : `<span class="badge live">● Open · ${t.pending} to go</span>`;
-    return `<div class="ticket"><div class="top"><div><b>${esc(t.name)}</b><div class="muted">${t.date} · ${t.sport} · ${esc(t.book)} · ${money(t.stake)} → ${money(t.returns)}</div></div>${st}</div>
+    return `<a class="ticket" href="ticket.html#${encodeURIComponent(t.slug)}" aria-label="${esc(t.name)}: open the full breakdown"><div class="top"><div><b>${esc(t.name)}</b><div class="muted">${t.date} · ${t.sport} · ${esc(t.book)} · ${money(t.stake)} → ${money(t.returns)}</div></div>${st}</div>
       <div class="sec" style="font-size:12px;margin-top:4px">${t.won} won · ${t.lost} lost · ${t.pending} pending</div>
       <ul>${t.legs.map(l => `<li><span>${esc(l.pick)} <span class="muted">${esc(l.line)} · ${esc(l.game)}</span><br><span class="muted">${esc(l.score || l.detail || l.note)}</span></span>${badge({ result: l.result, status: l.status, liveResult: l.live })}</li>`).join("")}</ul>
-      <a class="more" href="ticket.html#${encodeURIComponent(t.slug)}">${t.status === "L" ? "Reasoning, results &amp; review" : "Reasoning &amp; results"} →</a></div>`;
+      <span class="hint">${t.status === "L" ? "Reasoning, results &amp; review" : "Reasoning &amp; results"} →</span></a>`;
   }).join("") : `<div class="muted">No tickets in Picks/Tickets.md for this filter.</div>`;
 }
 

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ticket Breakdown</title>
+<style>
+/* Same tokens as the dashboard; one reading column with the scoreboard-style header on top. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10);
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+  --good: #0ca30c; --good-text: #006300; --critical: #d03b3b; --critical-text: #b42626; --warning: #fab219;
+  --wash-good: rgba(12,163,12,0.09); --wash-bad: rgba(208,59,59,0.08); --wash-note: rgba(42,120,214,0.07);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+    --good-text: #0ca30c; --critical-text: #e66767;
+    --wash-good: rgba(12,163,12,0.14); --wash-bad: rgba(208,59,59,0.16); --wash-note: rgba(57,135,229,0.12);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+  --good-text: #0ca30c; --critical-text: #e66767;
+  --wash-good: rgba(12,163,12,0.14); --wash-bad: rgba(208,59,59,0.16); --wash-note: rgba(57,135,229,0.12);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { position: sticky; top: 0; z-index: 2; background: var(--surface); border-bottom: 1px solid var(--border); }
+.bar-in { max-width: 860px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.bar-in a { color: var(--ink); text-decoration: none; font-weight: 600; }
+.bar-in a:hover { color: var(--series-1); }
+.spacer { flex: 1; }
+.bar-in label { display: flex; gap: 6px; align-items: center; min-width: 0; flex: 0 1 360px; }
+.bar-in label select { min-width: 0; width: 100%; }
+select, button { font: inherit; font-size: 13px; color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; max-width: 100%; }
+button { cursor: pointer; }
+main { max-width: 860px; margin: 0 auto; padding: 20px 16px 64px; display: grid; gap: 20px; }
+h1 { font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); margin: 0 0 10px; }
+.muted { color: var(--muted); }
+.sec { color: var(--ink-2); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; min-width: 0; }
+.hero { display: grid; gap: 12px; }
+.hero .meta { color: var(--ink-2); font-size: 14px; }
+.stats { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr)); }
+.stat .k { font-size: 12px; color: var(--ink-2); }
+.stat .v { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.track { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; background: var(--grid); }
+.track span { display: block; height: 100%; }
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 650; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border); white-space: nowrap; }
+.badge.W { color: var(--good-text); background: var(--wash-good); } .badge.L { color: var(--critical-text); background: var(--wash-bad); }
+.badge.P, .badge.V, .badge.open { color: var(--ink-2); }
+.badge.big { font-size: 14px; padding: 4px 12px; }
+.prose p { margin: 0 0 10px; max-width: 68ch; }
+.prose p:last-child, .prose ul:last-child { margin-bottom: 0; }
+.prose ul { margin: 0 0 10px; padding-left: 20px; max-width: 68ch; }
+.prose li { margin: 3px 0; }
+.legs { display: grid; gap: 12px; }
+.leg { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+.leg.L { box-shadow: inset 3px 0 0 var(--critical); }
+.leg.W { box-shadow: inset 3px 0 0 var(--good); }
+.leg-top { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+.leg-name { font-weight: 650; font-size: 16px; }
+.leg-sub { font-size: 13px; color: var(--ink-2); }
+.result-line { font-size: 14px; font-variant-numeric: tabular-nums; }
+dl.why { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 14px; }
+dl.why dt { color: var(--ink-2); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; padding-top: 2px; }
+dl.why dd { margin: 0; min-width: 0; }
+@media (max-width: 520px) { dl.why { grid-template-columns: 1fr; } dl.why dd { margin-bottom: 6px; } }
+.note { background: var(--wash-note); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+.note.bad { background: var(--wash-bad); }
+.note .lab { display: block; font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); margin-bottom: 4px; }
+.empty { color: var(--ink-2); font-size: 14px; }
+.err { color: var(--critical-text); }
+a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar-in">
+    <a href="./">← Dashboard</a>
+    <span class="spacer"></span>
+    <label class="sec" style="font-size:13px">Ticket <select id="pick" aria-label="Choose a ticket"></select></label>
+    <button id="theme" title="Toggle light/dark" aria-label="Toggle light or dark theme">◐</button>
+  </div>
+</header>
+<main id="main">
+  <div class="card"><span class="muted" id="status">Loading ticket…</span></div>
+</main>
+
+<script src="engine.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const money = (v) => "$" + (v ?? 0).toFixed(2);
+const pct = (v) => (v == null ? "–" : Math.round(v * 100) + "%");
+const MARKET = { ML: "Moneyline", spread: "Spread", total: "Total", prop: "Player prop", other: "Other" };
+let FEED = null;
+
+try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+$("theme").onclick = () => {
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", document.documentElement.dataset.theme); } catch (e) {}
+};
+
+// Small, safe Markdown subset for the notes: paragraphs, "- " lists, **bold**, `code`, [[links]] as plain text.
+function md(src) {
+  if (!src) return "";
+  const inline = (s) => esc(s).replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, a, b) => b || a)
+    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>");
+  // Within a block, consecutive "- " lines become one list and other lines one paragraph.
+  return src.trim().split(/\n\s*\n/).map((block) => {
+    const groups = [];
+    for (const l of block.split("\n")) {
+      const item = /^\s*[-*] /.test(l), text = l.replace(/^\s*[-*] /, ""), last = groups[groups.length - 1];
+      if (last && last.list === item) last.lines.push(text); else groups.push({ list: item, lines: [text] });
+    }
+    return groups.map((g) => g.list
+      ? "<ul>" + g.lines.map((i) => "<li>" + inline(i) + "</li>").join("") + "</ul>"
+      : "<p>" + inline(g.lines.join(" ")) + "</p>").join("");
+  }).join("");
+}
+
+function legNote(section, leg) {
+  const legs = section?.legs || {};
+  const want = [`${leg.game}: ${leg.pick}`, leg.pick].map((s) => s.toLowerCase());
+  for (const k of Object.keys(legs)) if (k.toLowerCase() === want[0]) return legs[k];
+  for (const k of Object.keys(legs)) if (k.toLowerCase() === want[1]) return legs[k];
+  return "";
+}
+
+function badge(result, status, live, big) {
+  const c = big ? " big" : "";
+  if (result === "W") return `<span class="badge W${c}">✓ Won</span>`;
+  if (result === "L") return `<span class="badge L${c}">✕ Lost</span>`;
+  if (result === "P") return `<span class="badge P${c}">= Push</span>`;
+  if (result === "V") return `<span class="badge V${c}">∅ Void</span>`;
+  if (status === "live") return `<span class="badge open${c}">● Live${live ? " · " + (live === "W" ? "winning" : live === "L" ? "losing" : "even") : ""}</span>`;
+  if (status === "scheduled") return `<span class="badge open${c}">Upcoming</span>`;
+  return `<span class="badge open${c}">Open</span>`;
+}
+
+function render() {
+  const tickets = FEED.tickets;
+  const slug = decodeURIComponent(location.hash.slice(1)) || tickets[0]?.slug;
+  const sel = $("pick");
+  sel.innerHTML = tickets.map((t) => `<option value="${esc(t.slug)}">${esc(t.date.slice(5))} · ${esc(t.sport)} · ${esc(t.name)}</option>`).join("");
+  sel.value = slug;
+  const t = tickets.find((x) => x.slug === slug);
+  if (!t) { $("main").innerHTML = `<div class="card"><p class="err">That ticket isn't in Tickets.md anymore.</p><p><a href="./">Back to the dashboard</a></p></div>`; return; }
+  document.title = `${t.name} · ${t.date}`;
+  const n = t.legs.length || 1, notes = t.notes || {};
+  const lostLegs = t.legs.filter((l) => l.result === "L");
+  const showReview = t.status === "L" || lostLegs.length > 0;
+  const status = t.status === "W" ? badge("W", "", "", true) : t.status === "L" ? badge("L", "", "", true)
+    : badge("", t.legs.some((l) => l.status === "live") ? "live" : "scheduled", "", true);
+
+  const hero = `<section class="card hero">
+    <div style="display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+      <div><h1>${esc(t.name)}</h1><div class="meta">${esc(t.sport)} · ${esc(fmtDate(t.date))} · ${esc(t.book)}</div></div>${status}
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="k">Stake</div><div class="v">${money(t.stake)}</div></div>
+      <div class="stat"><div class="k">${t.status === "W" ? "Paid" : "To return"}</div><div class="v">${money(t.returns)}</div></div>
+      <div class="stat"><div class="k">Legs</div><div class="v">${t.won}–${t.lost}${t.pending ? ` <span class="muted" style="font-size:14px">${t.pending} open</span>` : ""}</div></div>
+      <div class="stat"><div class="k">Net</div><div class="v" style="color:${t.status === "W" ? "var(--good-text)" : t.status === "L" ? "var(--critical-text)" : "var(--ink)"}">${t.status === "W" ? "+" + money(t.returns - t.stake) : t.status === "L" ? "−" + money(t.stake) : "pending"}</div></div>
+    </div>
+    <div class="track" role="img" aria-label="${t.won} legs won, ${t.lost} lost, ${t.pending} open">
+      ${t.won ? `<span style="width:${(t.won / n) * 100}%;background:var(--good)"></span>` : ""}${t.lost ? `<span style="width:${(t.lost / n) * 100}%;background:var(--critical)"></span>` : ""}
+    </div>
+  </section>`;
+
+  const reasoning = `<section>
+    <h2>Reasoning</h2>
+    <div class="card prose">${notes.reasoning?.summary ? md(notes.reasoning.summary) : `<p class="empty">No ticket-level reasoning written yet. Each leg below still shows the data behind it from the Pick Log.</p>`}</div>
+  </section>`;
+
+  const legs = `<section>
+    <h2>Legs and results</h2>
+    <div class="legs">${t.legs.map((l) => {
+      const why = legNote(notes.reasoning, l), miss = l.result === "L" ? legNote(notes.review, l) : "";
+      const resultLine = l.score || l.actual || l.note
+        ? `${esc(l.score || l.actual)}${l.note && l.note !== l.actual && l.note !== l.score ? ` <span class="muted">· ${esc(l.note)}</span>` : ""}${l.status === "live" && l.detail ? ` <span class="muted">· ${esc(l.detail)}</span>` : ""}`
+        : `<span class="muted">${l.status === "scheduled" ? "Not started" : "No result yet"}</span>`;
+      const rows = [["Data lean", l.dataLean], ["Media check", l.media], ["Final call", l.final], ["Lenses", l.lenses]].filter(([, v]) => v);
+      return `<article class="leg ${l.result || ""}">
+        <div class="leg-top">
+          <div><div class="leg-name">${esc(l.pick)} <span class="sec" style="font-weight:500">${esc(l.line && l.line !== "ML" ? l.line : "")}</span></div>
+          <div class="leg-sub">${esc(l.game)} · ${esc(MARKET[l.market] || "")}${l.price ? " · " + esc(l.price) : ""}${l.implied != null ? " · " + pct(l.implied) + " implied" : ""}</div></div>
+          ${badge(l.result, l.status, l.live)}
+        </div>
+        <div class="result-line"><span class="sec">Result:</span> ${resultLine}${l.source === "auto" ? ' <span class="muted">(graded automatically)</span>' : ""}</div>
+        ${why ? `<div class="note prose"><span class="lab">Why this pick</span>${md(why)}</div>` : ""}
+        ${rows.length ? `<dl class="why">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : `<div class="empty">This leg isn't in the Pick Log, so there's no data lean to show.</div>`}
+        ${miss ? `<div class="note bad prose"><span class="lab">What went wrong</span>${md(miss)}</div>` : ""}
+      </article>`;
+    }).join("")}</div>
+  </section>`;
+
+  let review = "";
+  if (showReview) {
+    const body = notes.review?.summary
+      ? md(notes.review.summary)
+      : `<p class="empty">Review not written yet. Sofa adds it to the ticket's notes after grading.</p>
+         <ul>${lostLegs.map((l) => `<li><b>${esc(l.pick)}</b> (${esc(l.game)}): ${esc(l.score || l.actual || "")}${l.note ? " · " + esc(l.note) : ""}</li>`).join("")}</ul>`;
+    review = `<section><h2>Review</h2><div class="card prose">${body}</div></section>`;
+  }
+
+  const src = notes.file ? `<p class="muted" style="font-size:12px;margin:0">Notes: Picks/Tickets/${esc(notes.file)}.md · Leg data: Pick Log · Scores: ESPN</p>` : "";
+  $("main").innerHTML = hero + reasoning + legs + review + src;
+}
+
+function fmtDate(d) { return new Date(d + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" }); }
+
+async function load() {
+  try {
+    FEED = (await loadFeed()).feed;
+    const y = scrollY;
+    render();
+    scrollTo(0, y);
+  } catch (e) {
+    $("main").innerHTML = `<div class="card"><p class="err">Couldn't load the ticket (${esc(e.message)}). Retrying in a minute.</p></div>`;
+  }
+}
+$("pick").onchange = (e) => { location.hash = encodeURIComponent(e.target.value); };
+addEventListener("hashchange", () => { if (FEED) { render(); scrollTo(0, 0); } });
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

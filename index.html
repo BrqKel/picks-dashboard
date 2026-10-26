@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picks Dashboard</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10);
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+  --good: #0ca30c; --good-text: #006300; --critical: #d03b3b; --warning: #fab219;
+  --neutral: #f0efec;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+    --good-text: #0ca30c; --neutral: #383835;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+  --good-text: #0ca30c; --neutral: #383835;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 2; }
+h1 { font-size: 18px; margin: 0; }
+h2 { font-size: 15px; margin: 0 0 10px; }
+main { max-width: 1280px; margin: 0 auto; padding: 16px 24px 48px; display: grid; gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; min-width: 0; }
+.row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); }
+.tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.tile .k { color: var(--ink-2); font-size: 12px; }
+.tile .v { font-size: 24px; font-weight: 600; margin-top: 2px; }
+.tile .s { color: var(--muted); font-size: 12px; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+select, button { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; }
+button { cursor: pointer; }
+.muted { color: var(--muted); }
+.sec { color: var(--ink-2); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); white-space: nowrap; }
+.badge.W { color: var(--good-text); } .badge.L { color: var(--critical); } .badge.P, .badge.V { color: var(--ink-2); }
+.badge.live { color: var(--ink); } .badge.open { color: var(--ink-2); }
+.pos { color: var(--good-text); } .neg { color: var(--critical); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; font-size: 12px; position: sticky; top: 0; background: var(--surface); }
+td.num, th.num { text-align: right; }
+.scroll { overflow: auto; max-height: 520px; }
+.tickets { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); }
+.ticket { border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.ticket .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.ticket ul { list-style: none; margin: 8px 0 0; padding: 0; }
+.ticket li { display: flex; gap: 8px; justify-content: space-between; padding: 3px 0; border-top: 1px solid var(--grid); font-size: 13px; }
+.games { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); }
+.game { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+.game.has { border-color: var(--series-1); }
+.game .sc { display: flex; justify-content: space-between; }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin-bottom: 6px; }
+.tip { position: fixed; pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.15); display: none; z-index: 10; }
+.err { color: var(--critical); }
+@media (max-width: 600px) { header, main { padding-left: 16px; padding-right: 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Picks Dashboard</h1>
+    <div class="muted" id="status">Loading…</div>
+  </div>
+  <div class="controls">
+    <label>Week <select id="week"></select></label>
+    <label>Sport <select id="sport"><option value="">All</option><option>NBA</option><option>NFL</option><option>NHL</option></select></label>
+    <button id="refresh">Refresh now</button>
+    <button id="theme" title="Toggle light/dark">◐</button>
+  </div>
+</header>
+<main>
+  <section class="tiles" id="tiles"></section>
+
+  <section class="card">
+    <h2>Tickets</h2>
+    <div class="tickets" id="tickets"></div>
+  </section>
+
+  <section class="card">
+    <h2>Today's games <span class="muted" id="todayLabel"></span></h2>
+    <div id="games"></div>
+  </section>
+
+  <section class="row">
+    <div class="card">
+      <h2>Hit rate vs price-implied, by bet type</h2>
+      <div class="legend"><span><span class="dot" style="background:var(--series-1)"></span>Hit rate</span><span>┃ Break-even (avg implied)</span></div>
+      <div class="chart" id="hitChart"></div>
+    </div>
+    <div class="card">
+      <h2>Cumulative units (flat 1u per leg)</h2>
+      <div class="legend" id="unitsLegend"></div>
+      <div class="chart" id="unitsChart"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Weekly breakdown</h2>
+    <div class="scroll"><table id="breakdown"></table></div>
+  </section>
+
+  <section class="card">
+    <h2>All picks <span class="muted" id="pickCount"></span></h2>
+    <div class="controls" style="margin-bottom:8px">
+      <label>Result <select id="resFilter"><option value="">All</option><option value="open">Open / live</option><option>W</option><option>L</option><option>P</option></select></label>
+      <label>Bet type <select id="mktFilter"><option value="">All</option><option>ML</option><option>spread</option><option>total</option><option>prop</option></select></label>
+    </div>
+    <div class="scroll"><table id="picks"></table></div>
+  </section>
+</main>
+<div class="tip" id="tip"></div>
+<script>
+// ---- live engine: data.json from the vault + ESPN, graded in the browser ----
+const SPORTS = { NBA: "basketball/nba", NFL: "football/nfl", NHL: "hockey/nhl" };
+// Abbreviation variants -> one canonical form, applied to ESPN and vault text alike.
+const ALIASES = {
+  NBA: { NY: "NYK", UTAH: "UTA", WSH: "WAS", SA: "SAS", GS: "GSW", NO: "NOP", PHO: "PHX", BRK: "BKN", CHO: "CHA" },
+  NFL: { WAS: "WSH", JAC: "JAX", LA: "LAR", ARZ: "ARI" },
+  NHL: { LA: "LAK", NJ: "NJD", SJ: "SJS", TB: "TBL", UTAH: "UTA", VEG: "VGK", WAS: "WSH", MON: "MTL", NAS: "NSH", CLB: "CBJ" },
+};
+// Prop stat keyword -> box-score labels summed; "A|B" = whichever label exists.
+const PROP_STATS = {
+  pra: ["PTS", "REB", "AST"], "pts+reb+ast": ["PTS", "REB", "AST"], "pts+reb": ["PTS", "REB"], "pts+ast": ["PTS", "AST"],
+  "reb+ast": ["REB", "AST"], points: ["PTS"], pts: ["PTS"], rebounds: ["REB"], reb: ["REB"], assists: ["AST"], ast: ["AST"],
+  "3pm": ["3PT"], threes: ["3PT"], blocks: ["BLK"], steals: ["STL"], turnovers: ["TO"],
+};
+const NHL_PROP_STATS = { shots: ["S|SOG"], "shots on goal": ["S|SOG"], sog: ["S|SOG"], goals: ["G"], assists: ["A"], points: ["G", "A"], saves: ["SV"] };
+const GAME_RE = /^\s*([A-Z0-9]+)\s*(?:@|vs\.?)\s*([A-Z0-9]+)/;
+const LIVE_TTL = 55000;
+
+const norm = (sport, a) => (ALIASES[sport] || {})[a] || a;
+const todayET = () => new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
+const shift = (d, n) => { const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+const firstFloat = (s) => { const m = String(s || "").match(/[+-]?\d+(?:\.\d+)?/); return m ? parseFloat(m[0]) : null; };
+
+const httpCache = new Map(); // url -> { t, forever, data, inflight }
+async function getJSON(url) {
+  const h = httpCache.get(url);
+  if (h && h.data && (h.forever || Date.now() - h.t < LIVE_TTL)) return h.data;
+  if (h && h.inflight) return h.inflight;
+  const p = fetch(url, { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((data) => { httpCache.set(url, { t: Date.now(), data, forever: h?.forever }); return data; })
+    .catch((e) => { httpCache.set(url, { ...(h || {}), inflight: null }); if (h?.data) return h.data; throw e; });
+  httpCache.set(url, { ...(h || {}), inflight: p });
+  return p;
+}
+const pin = (url) => { const h = httpCache.get(url); if (h) h.forever = true; };
+
+async function scoreboard(sport, date) {
+  const url = `https://site.api.espn.com/apis/site/v2/sports/${SPORTS[sport]}/scoreboard?dates=${date.replace(/-/g, "")}&limit=200`;
+  let data;
+  try { data = await getJSON(url); } catch { return []; }
+  const evs = (data.events || []).map((e) => {
+    const c = e.competitions[0], st = c.status.type, teams = {};
+    for (const t of c.competitors) {
+      const ab = norm(sport, t.team.abbreviation);
+      teams[t.homeAway] = { abbr: ab, name: t.team.shortDisplayName || ab, score: st.state !== "pre" && /^\d+$/.test(String(t.score ?? "")) ? +t.score : null };
+    }
+    return { id: e.id, sport, date, start: e.date, state: st.state, detail: st.shortDetail || "", completed: !!st.completed, away: teams.away, home: teams.home };
+  });
+  if (evs.length && evs.every((e) => e.completed) && date < todayET()) pin(url);
+  return evs;
+}
+
+async function boxscore(sport, ev) {
+  const url = `https://site.api.espn.com/apis/site/v2/sports/${SPORTS[sport]}/summary?event=${ev.id}`;
+  let data;
+  try { data = await getJSON(url); } catch { return {}; }
+  if (ev.completed) pin(url);
+  const players = {};
+  for (const team of data?.boxscore?.players || [])
+    for (const block of team.statistics || []) {
+      const labels = block.labels || [];
+      for (const a of block.athletes || []) {
+        const key = nameKey(a.athlete.displayName).join(" ");
+        const stats = players[key] || (players[key] = {});
+        (a.stats || []).forEach((v, i) => { stats[labels[i]] = v; });
+      }
+    }
+  return players;
+}
+
+function nameKey(name) {
+  return name.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z ]/g, "")
+    .replace(/\b(jr|sr|ii|iii|iv)\b/g, "").split(/\s+/).filter(Boolean);
+}
+function findPlayer(players, key) {
+  const j = key.join(" ");
+  if (players[j]) return players[j];
+  for (const [k, v] of Object.entries(players)) {
+    const parts = k.split(" ");
+    if (parts.length && key.length && parts[parts.length - 1] === key[key.length - 1] && parts[0][0] === key[0][0]) return v;
+  }
+  return null;
+}
+function statValue(stats, labels) {
+  let total = 0;
+  for (const lab of labels) {
+    let v = null;
+    for (const k of lab.split("|")) if (k in stats) { v = stats[k]; break; }
+    if (v == null) return null;
+    const n = parseFloat(String(v).split("-")[0]); // "5-10" made-attempted
+    if (isNaN(n)) return null;
+    total += n;
+  }
+  return total;
+}
+
+async function findEvent(sport, game, date) {
+  const m = String(game).match(GAME_RE);
+  if (!m || !SPORTS[sport]) return null;
+  const want = [norm(sport, m[1]), norm(sport, m[2])].sort().join("|");
+  // NFL slates run Thu-Mon; NBA/NHL late games stay on the ET date.
+  for (let off = 0; off < (sport === "NFL" ? 3 : 1); off++)
+    for (const ev of await scoreboard(sport, shift(date, off)))
+      if (ev.away && ev.home && [ev.away.abbr, ev.home.abbr].sort().join("|") === want) return ev;
+  return null;
+}
+
+async function grade(p) {
+  const out = { event: null, status: "unmatched", auto: "", live: "", note: "" };
+  const ev = await findEvent(p.sport, p.game, p.date);
+  if (!ev) { out.note = "Game not found on ESPN"; return out; }
+  out.event = ev;
+  out.status = { pre: "scheduled", in: "live", post: "final" }[ev.state] || ev.state;
+  if (ev.state === "pre" || ev.away.score == null || ev.home.score == null) return out;
+  const score = { [ev.away.abbr]: ev.away.score, [ev.home.abbr]: ev.home.score };
+  let res = "";
+  if (p.market === "ML" || p.market === "spread") {
+    const team = norm(p.sport, p.pick.split(/\s+/)[0]);
+    if (!(team in score)) { out.note = `${team} not in this game`; return out; }
+    const opp = Object.keys(score).find((t) => t !== team);
+    let margin = score[team] - score[opp];
+    if (p.market === "spread") margin += firstFloat(p.line) || 0;
+    res = margin > 0 ? "W" : margin < 0 ? "L" : "P";
+    out.note = `${team} ${margin >= 0 ? "+" : ""}${margin} vs the number`;
+  } else if (p.market === "total") {
+    const line = firstFloat(p.line), tot = ev.away.score + ev.home.score, over = /over/i.test(p.pick);
+    const diff = over ? tot - line : line - tot;
+    res = diff > 0 ? "W" : diff < 0 ? "L" : "P";
+    out.note = `${tot} total vs ${line}`;
+  } else if (p.market === "prop") {
+    const m = p.pick.match(/^(.+?)\s+(over|under)\s+(.+?)(?:\s*\(.*\))?$/i);
+    if (!m) { out.note = "Prop format not recognised"; return out; }
+    const side = m[2].toLowerCase(), stat = m[3].toLowerCase().trim();
+    const labels = (p.sport === "NHL" ? NHL_PROP_STATS : PROP_STATS)[stat];
+    if (!labels) { out.note = `Stat "${stat}" not mapped`; return out; }
+    const stats = findPlayer(await boxscore(p.sport, ev), nameKey(m[1]));
+    if (!stats) {
+      out.note = "Player not in box score (DNP?)";
+      if (ev.state === "post") res = "V";
+    } else {
+      const val = statValue(stats, labels), line = firstFloat(p.line);
+      if (val == null || line == null) out.note = "Stat missing from box score";
+      else {
+        const diff = side === "over" ? val - line : line - val;
+        res = diff > 0 ? "W" : diff < 0 ? "L" : "P";
+        out.note = `${val} vs ${line}${stats.MIN ? ` (${stats.MIN}m)` : ""}`;
+      }
+    }
+  }
+  // An over that has already cleared can't lose, so it settles while live.
+  const clearedOver = res === "W" && ev.state === "in" && (p.market === "prop" || p.market === "total") && /\bover\b/i.test(p.pick);
+  if (ev.state === "post" || clearedOver) out.auto = res; else out.live = res;
+  return out;
+}
+
+const weekStart = (d) => { const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() - ((x.getUTCDay() + 6) % 7)); return x.toISOString().slice(0, 10); };
+
+async function buildFeed(raw) {
+  const today = todayET(), recent = shift(today, -1);
+  const picks = raw.picks.map((p) => ({ ...p }));
+  await Promise.all(picks.map(async (p) => {
+    const logged = (p.loggedResult || "").split(" ")[0].trim();
+    p.provisional = /prov/.test(p.loggedResult || "");
+    const needs = !logged || p.provisional || p.date >= recent;
+    const g = needs ? await grade(p) : { status: "final", auto: "", live: "", note: p.loggedActual, event: null };
+    const ev = g.event;
+    Object.assign(p, {
+      status: g.status, autoResult: g.auto, liveResult: g.live, note: g.note || p.loggedActual,
+      score: ev && ev.away.score != null ? `${ev.away.abbr} ${ev.away.score} - ${ev.home.abbr} ${ev.home.score}` : "",
+      detail: ev ? ev.detail : "",
+    });
+    if (["W", "L", "P", "V"].includes(logged)) { p.result = logged; p.source = "log"; }
+    else if (g.auto) { p.result = g.auto; p.source = "auto"; }
+    else { p.result = ""; p.source = ""; }
+  }));
+  const byRef = new Map(picks.map((p) => [`${p.date}|${p.game}|${p.pick}`, p]));
+
+  const tickets = raw.tickets.map((t) => {
+    const legs = t.legRefs.map(({ game, pick }) => {
+      const p = byRef.get(`${t.date}|${game}|${pick}`);
+      return p ? { game, pick, found: true, result: p.result, live: p.liveResult, status: p.status, score: p.score, detail: p.detail, note: p.note, line: p.line, price: p.price }
+               : { game, pick, found: false, result: "", live: "", status: "missing", score: "", detail: "", note: "Not in Pick Log", line: "", price: "" };
+    });
+    const res = legs.map((l) => l.result);
+    const status = t.override || (res.includes("L") ? "L" : legs.length && res.every((r) => ["W", "P", "V"].includes(r)) ? "W" : "open");
+    return { ...t, legs, status, won: res.filter((r) => r === "W").length, lost: res.filter((r) => r === "L").length,
+             pending: res.filter((r) => !r).length, paid: status === "W" ? t.returns : 0 };
+  });
+
+  const games = {};
+  await Promise.all(Object.keys(SPORTS).map(async (s) => { games[s] = await scoreboard(s, today); }));
+  const picked = new Map();
+  for (const p of picks) {
+    const m = p.game.match(GAME_RE);
+    if (!m || p.superseded || !(p.status === "live" || p.status === "scheduled" || p.date >= recent)) continue;
+    const k = p.sport + "|" + [norm(p.sport, m[1]), norm(p.sport, m[2])].sort().join("|");
+    if (!picked.has(k)) picked.set(k, []);
+    picked.get(k).push({ pick: p.pick, line: p.line, result: p.result, live: p.liveResult });
+  }
+  for (const [s, evs] of Object.entries(games))
+    for (const e of evs) if (e.away && e.home) e.picks = picked.get(s + "|" + [e.away.abbr, e.home.abbr].sort().join("|")) || [];
+
+  return {
+    generated: new Date().toISOString(), exported: raw.exported, today, picks, tickets, games,
+    weeks: [...new Set(picks.map((p) => weekStart(p.date)))].sort().reverse(),
+  };
+}
+
+const SPORT_COLOR = { NBA: "var(--series-1)", NFL: "var(--series-2)", NHL: "var(--series-3)" };
+const $ = id => document.getElementById(id);
+let DATA = null;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const pct = v => v == null ? "–" : Math.round(v * 100) + "%";
+const sgn = v => v == null ? "–" : (v > 0 ? "+" : "") + v.toFixed(2) + "u";
+const money = v => "$" + (v ?? 0).toFixed(2);
+const rec = g => g ? `${g.W}-${g.L}${g.P ? "-" + g.P : ""}` : "0-0";
+
+try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+$("theme").onclick = () => {
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", document.documentElement.dataset.theme); } catch (e) {}
+};
+
+function badge(p) {
+  if (p.result) return `<span class="badge ${p.result}">${p.result === "W" ? "✓ W" : p.result === "L" ? "✕ L" : p.result}${p.source === "auto" ? " <span class='muted'>auto</span>" : ""}</span>`;
+  if (p.status === "live") return `<span class="badge live">● Live${p.liveResult ? " · " + (p.liveResult === "W" ? "winning" : p.liveResult === "L" ? "losing" : "even") : ""}</span>`;
+  if (p.status === "scheduled") return `<span class="badge open">Scheduled</span>`;
+  return `<span class="badge open">Open</span>`;
+}
+
+function filtered() {
+  const wk = $("week").value, sp = $("sport").value;
+  return DATA.picks.filter(p => !p.superseded && (!sp || p.sport === sp) && (!wk || weekOf(p.date) === wk));
+}
+function weekOf(d) { const x = new Date(d + "T12:00:00"); const k = (x.getDay() + 6) % 7; x.setDate(x.getDate() - k); return x.toISOString().slice(0, 10); }
+function tally(ps) {
+  const g = { W: 0, L: 0, P: 0, open: 0, u: 0, n: 0, imp: 0, impN: 0 };
+  for (const p of ps) {
+    if (["W", "L", "P"].includes(p.result)) {
+      g[p.result]++;
+      if (p.implied != null) { g.imp += p.implied; g.impN++; }
+      if (p.odds != null) { g.n++; g.u += p.result === "W" ? (p.odds > 0 ? p.odds / 100 : 100 / -p.odds) : p.result === "L" ? -1 : 0; }
+    } else if (p.result !== "V") g.open++;
+  }
+  g.hit = g.W + g.L ? g.W / (g.W + g.L) : null; g.implied = g.impN ? g.imp / g.impN : null; g.roi = g.n ? g.u / g.n : null;
+  return g;
+}
+
+function renderTiles(ps) {
+  const g = tally(ps);
+  const wk = $("week").value, sp = $("sport").value;
+  const ts = DATA.tickets.filter(t => (!sp || t.sport === sp) && (!wk || weekOf(t.date) === wk));
+  const staked = ts.reduce((a, t) => a + (t.stake || 0), 0), paid = ts.reduce((a, t) => a + (t.paid || 0), 0);
+  const live = ps.filter(p => p.status === "live").length;
+  $("tiles").innerHTML = [
+    ["Leg record", rec(g), `${g.open} open · ${live} live`],
+    ["Hit rate", pct(g.hit), `vs ${pct(g.implied)} implied by price`],
+    ["Flat-stake units", `<span class="${g.u >= 0 ? "pos" : "neg"}">${sgn(g.u)}</span>`, `ROI ${g.roi == null ? "–" : (g.roi > 0 ? "+" : "") + Math.round(g.roi * 100) + "%"} on ${g.n} priced legs`],
+    ["Tickets", `${ts.filter(t => t.status === "W").length}-${ts.filter(t => t.status === "L").length}`, `${ts.filter(t => t.status === "open").length} still open`],
+    ["Staked / returned", `${money(staked)} / ${money(paid)}`, `<span class="${paid - staked >= 0 ? "pos" : "neg"}">${paid - staked >= 0 ? "+" : "−"}${money(Math.abs(paid - staked))}</span> net`],
+  ].map(([k, v, s]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
+}
+
+function renderTickets() {
+  const wk = $("week").value, sp = $("sport").value;
+  const ts = DATA.tickets.filter(t => (!sp || t.sport === sp) && (!wk || weekOf(t.date) === wk));
+  $("tickets").innerHTML = ts.length ? ts.map(t => {
+    const st = t.status === "W" ? `<span class="badge W">✓ Won ${money(t.returns)}</span>` : t.status === "L" ? `<span class="badge L">✕ Lost</span>` : `<span class="badge live">● Open · ${t.pending} to go</span>`;
+    return `<div class="ticket"><div class="top"><div><b>${esc(t.name)}</b><div class="muted">${t.date} · ${t.sport} · ${esc(t.book)} · ${money(t.stake)} → ${money(t.returns)}</div></div>${st}</div>
+      <div class="sec" style="font-size:12px;margin-top:4px">${t.won} won · ${t.lost} lost · ${t.pending} pending</div>
+      <ul>${t.legs.map(l => `<li><span>${esc(l.pick)} <span class="muted">${esc(l.line)} · ${esc(l.game)}</span><br><span class="muted">${esc(l.score || l.detail || l.note)}</span></span>${badge({ result: l.result, status: l.status, liveResult: l.live })}</li>`).join("")}</ul></div>`;
+  }).join("") : `<div class="muted">No tickets in Picks/Tickets.md for this filter.</div>`;
+}
+
+function renderGames() {
+  $("todayLabel").textContent = DATA.today;
+  const sp = $("sport").value;
+  $("games").innerHTML = Object.entries(DATA.games).filter(([s]) => !sp || s === sp).map(([s, evs]) => `
+    <h2 style="margin-top:12px"><span class="dot" style="background:${SPORT_COLOR[s]}"></span>${s} <span class="muted">${evs.length} game${evs.length === 1 ? "" : "s"}</span></h2>
+    ${evs.length ? `<div class="games">${evs.map(e => `<div class="game ${e.picks && e.picks.length ? "has" : ""}">
+      <div class="sc"><span>${esc(e.away?.abbr)}</span><b>${e.away?.score ?? ""}</b></div>
+      <div class="sc"><span>@ ${esc(e.home?.abbr)}</span><b>${e.home?.score ?? ""}</b></div>
+      <div class="muted">${esc(e.detail)}</div>
+      ${(e.picks || []).map(p => `<div style="margin-top:4px">${esc(p.pick)} <span class="muted">${esc(p.line)}</span> ${badge({ result: p.result, status: e.state === "in" ? "live" : e.state === "pre" ? "scheduled" : "", liveResult: p.live })}</div>`).join("")}
+    </div>`).join("")}</div>` : `<div class="muted">No games today.</div>`}`).join("");
+}
+
+const tip = $("tip");
+function showTip(ev, html) { tip.innerHTML = html; tip.style.display = "block"; tip.style.left = Math.min(ev.clientX + 12, innerWidth - 220) + "px"; tip.style.top = ev.clientY + 12 + "px"; }
+function hideTip() { tip.style.display = "none"; }
+
+function renderHitChart(ps) {
+  const mk = ["ML", "spread", "total", "prop"].map(m => ({ m, g: tally(ps.filter(p => p.market === m)) })).filter(x => x.g.W + x.g.L);
+  const W = 520, rowH = 34, left = 70, right = 70, H = mk.length * rowH + 24;
+  const x = v => left + v * (W - left - right);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Hit rate by bet type">`;
+  for (const t of [0, .25, .5, .75, 1]) s += `<line x1="${x(t)}" x2="${x(t)}" y1="0" y2="${H - 18}" stroke="var(--grid)"/><text x="${x(t)}" y="${H - 4}" font-size="11" fill="var(--muted)" text-anchor="middle">${t * 100}%</text>`;
+  mk.forEach(({ m, g }, i) => {
+    const y = i * rowH + 6, bw = Math.max(2, x(g.hit) - left);
+    s += `<text x="${left - 8}" y="${y + 15}" font-size="12" fill="var(--ink-2)" text-anchor="end">${m}</text>`;
+    s += `<rect class="hb" data-i="${i}" x="${left}" y="${y + 3}" width="${bw}" height="18" rx="4" fill="var(--series-1)"/>`;
+    if (g.implied != null) s += `<line x1="${x(g.implied)}" x2="${x(g.implied)}" y1="${y}" y2="${y + 24}" stroke="var(--ink)" stroke-width="2"/>`;
+    s += `<text x="${W - right + 8}" y="${y + 16}" font-size="12" fill="var(--ink)">${pct(g.hit)} <tspan fill="var(--muted)">(${g.W}-${g.L})</tspan></text>`;
+    s += `<rect class="hit" data-i="${i}" x="0" y="${y}" width="${W}" height="${rowH}" fill="transparent"/>`;
+  });
+  $("hitChart").innerHTML = mk.length ? s + "</svg>" : `<div class="muted">No graded legs yet.</div>`;
+  $("hitChart").querySelectorAll(".hit").forEach(r => {
+    const { m, g } = mk[r.dataset.i];
+    r.onmousemove = e => showTip(e, `<b>${m}</b><br>${rec(g)} · hit ${pct(g.hit)}<br>Avg implied ${pct(g.implied)}<br>Units ${sgn(g.u)} (ROI ${g.roi == null ? "–" : Math.round(g.roi * 100) + "%"})`);
+    r.onmouseleave = hideTip;
+  });
+}
+
+function renderUnitsChart(ps) {
+  const sports = ["NBA", "NFL", "NHL"].filter(s => ps.some(p => p.sport === s && p.odds != null && ["W", "L", "P"].includes(p.result)));
+  const dates = [...new Set(ps.filter(p => ["W", "L", "P"].includes(p.result)).map(p => p.date))].sort();
+  $("unitsLegend").innerHTML = sports.map(s => `<span><span class="dot" style="background:${SPORT_COLOR[s]}"></span>${s}</span>`).join("");
+  if (!dates.length) { $("unitsChart").innerHTML = `<div class="muted">No graded legs yet.</div>`; return; }
+  const series = sports.map(s => { let c = 0; return { s, pts: dates.map(d => { for (const p of ps) if (p.sport === s && p.date === d && p.odds != null) { if (p.result === "W") c += p.odds > 0 ? p.odds / 100 : 100 / -p.odds; else if (p.result === "L") c -= 1; } return c; }) }; });
+  const all = series.flatMap(x => x.pts).concat([0]);
+  const lo = Math.floor(Math.min(...all)), hi = Math.ceil(Math.max(...all));
+  const W = 520, H = 220, l = 40, r = 44, t = 10, b = 26;
+  const X = i => dates.length === 1 ? (l + W - r) / 2 : l + i * (W - l - r) / (dates.length - 1);
+  const Y = v => t + (hi - v) * (H - t - b) / ((hi - lo) || 1);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative units by sport">`;
+  const step = Math.max(1, Math.ceil((hi - lo) / 5));
+  for (let v = lo; v <= hi; v += step) s += `<line x1="${l}" x2="${W - r}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v === 0 ? "var(--axis)" : "var(--grid)"}"/><text x="${l - 6}" y="${Y(v) + 4}" font-size="11" fill="var(--muted)" text-anchor="end">${v}</text>`;
+  dates.forEach((d, i) => s += `<text x="${X(i)}" y="${H - 6}" font-size="11" fill="var(--muted)" text-anchor="middle">${d.slice(5)}</text>`);
+  for (const se of series) {
+    s += `<polyline fill="none" stroke="${SPORT_COLOR[se.s]}" stroke-width="2" points="${se.pts.map((v, i) => X(i) + "," + Y(v)).join(" ")}"/>`;
+    se.pts.forEach((v, i) => s += `<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="${SPORT_COLOR[se.s]}" stroke="var(--surface)" stroke-width="2"/>`);
+    const last = se.pts[se.pts.length - 1];
+    s += `<text x="${X(dates.length - 1) + 8}" y="${Y(last) + 4}" font-size="11" fill="var(--ink)">${se.s}</text>`;
+  }
+  s += `<line id="cross" x1="0" x2="0" y1="${t}" y2="${H - b}" stroke="var(--axis)" visibility="hidden"/>`;
+  s += `<rect id="uhit" x="${l}" y="0" width="${W - l - r}" height="${H}" fill="transparent"/></svg>`;
+  $("unitsChart").innerHTML = s;
+  const svg = $("unitsChart").querySelector("svg"), cross = svg.querySelector("#cross");
+  svg.querySelector("#uhit").onmousemove = e => {
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const lx = pt.matrixTransform(svg.getScreenCTM().inverse()).x;
+    let i = dates.length === 1 ? 0 : Math.round((lx - l) / ((W - l - r) / (dates.length - 1)));
+    i = Math.max(0, Math.min(dates.length - 1, i));
+    cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i)); cross.setAttribute("visibility", "visible");
+    showTip(e, `<b>${dates[i]}</b><br>` + series.map(se => `${se.s}: ${sgn(se.pts[i])}`).join("<br>"));
+  };
+  svg.querySelector("#uhit").onmouseleave = () => { cross.setAttribute("visibility", "hidden"); hideTip(); };
+}
+
+function renderBreakdown(ps) {
+  const rows = [];
+  for (const s of ["NBA", "NFL", "NHL"]) {
+    const sp = ps.filter(p => p.sport === s); if (!sp.length) continue;
+    rows.push({ label: `<b><span class="dot" style="background:${SPORT_COLOR[s]}"></span>${s}</b>`, g: tally(sp) });
+    for (const m of ["ML", "spread", "total", "prop"]) { const mp = sp.filter(p => p.market === m); if (mp.length) rows.push({ label: `<span style="padding-left:18px">${m}</span>`, g: tally(mp) }); }
+  }
+  const days = [...new Set(ps.map(p => p.date))].sort().reverse();
+  rows.push({ label: `<b>By day</b>`, g: null });
+  for (const d of days) rows.push({ label: `<span style="padding-left:18px">${d}</span>`, g: tally(ps.filter(p => p.date === d)) });
+  $("breakdown").innerHTML = `<tr><th></th><th class="num">Record</th><th class="num">Hit</th><th class="num">Implied</th><th class="num">Edge</th><th class="num">Units</th><th class="num">ROI</th><th class="num">Open</th></tr>` +
+    rows.map(({ label, g }) => g ? `<tr><td>${label}</td><td class="num">${rec(g)}</td><td class="num">${pct(g.hit)}</td><td class="num">${pct(g.implied)}</td>
+      <td class="num ${g.hit != null && g.implied != null ? (g.hit >= g.implied ? "pos" : "neg") : ""}">${g.hit != null && g.implied != null ? ((g.hit - g.implied) * 100 > 0 ? "+" : "") + Math.round((g.hit - g.implied) * 100) + " pts" : "–"}</td>
+      <td class="num ${g.u >= 0 ? "pos" : "neg"}">${g.n ? sgn(g.u) : "–"}</td><td class="num">${g.roi == null ? "–" : Math.round(g.roi * 100) + "%"}</td><td class="num">${g.open}</td></tr>`
+      : `<tr><td colspan="8">${label}</td></tr>`).join("");
+}
+
+function renderPicks(ps) {
+  const rf = $("resFilter").value, mf = $("mktFilter").value;
+  const list = ps.filter(p => (!mf || p.market === mf) && (!rf || (rf === "open" ? !p.result : p.result === rf)))
+    .sort((a, b) => b.date.localeCompare(a.date) || (a.result ? 1 : 0) - (b.result ? 1 : 0));
+  $("pickCount").textContent = `(${list.length})`;
+  $("picks").innerHTML = `<tr><th>Date</th><th>Sport</th><th>Game</th><th>Pick</th><th>Line</th><th>Price</th><th class="num">Implied</th><th>Lean</th><th>Score / actual</th><th>Result</th></tr>` +
+    list.map(p => `<tr><td>${p.date}</td><td><span class="dot" style="background:${SPORT_COLOR[p.sport] || "var(--muted)"}"></span>${p.sport}</td><td>${esc(p.game)}</td><td>${esc(p.pick)}</td><td>${esc(p.line)}</td><td>${esc(p.price)}</td>
+      <td class="num">${pct(p.implied)}</td><td class="sec">${esc(p.final)}</td><td class="sec">${esc(p.loggedActual || p.note || p.score)}${p.status === "live" ? `<br><span class="muted">${esc(p.score)} · ${esc(p.detail)}</span>` : ""}</td><td>${badge(p)}</td></tr>`).join("");
+}
+
+function renderAll() {
+  if (!DATA) return;
+  const ps = filtered();
+  renderTiles(ps); renderTickets(); renderGames(); renderHitChart(ps); renderUnitsChart(ps); renderBreakdown(ps); renderPicks(ps);
+}
+
+function fillWeeks() {
+  const cur = $("week").value;
+  $("week").innerHTML = `<option value="">All time</option>` + DATA.weeks.map(w => `<option value="${w}">Week of ${w}</option>`).join("");
+  $("week").value = cur && DATA.weeks.includes(cur) ? cur : (DATA.weeks.includes(weekOf(DATA.today)) ? weekOf(DATA.today) : (DATA.weeks[0] || ""));
+}
+
+let first = true, RAW = null;
+const ago = (iso) => { const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : m < 1440 ? Math.round(m / 60) + " h ago" : Math.round(m / 1440) + " d ago"; };
+async function load() {
+  let picksErr = "";
+  try {
+    const r = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error("data.json returned " + r.status);
+    RAW = await r.json();
+  } catch (e) { picksErr = e.message; }
+  if (!RAW) { $("status").innerHTML = `<span class="err">Couldn't load the picks file (${esc(picksErr)}). Retrying in a minute.</span>`; return; }
+  try {
+    DATA = await buildFeed(RAW);
+    if (first) { fillWeeks(); first = false; } else { const w = $("week").value; fillWeeks(); $("week").value = w; }
+    renderAll();
+    const live = DATA.picks.filter(p => p.status === "live").length;
+    $("status").innerHTML = `Scores ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · picks synced ${ago(RAW.exported)}${picksErr ? " (offline copy)" : ""} · ${live ? `<b>${live} live leg${live > 1 ? "s" : ""}</b> · ` : ""}refreshes every minute`;
+  } catch (e) {
+    $("status").innerHTML = `<span class="err">Live scores failed to load (${esc(e.message)}). Retrying in a minute.</span>`;
+  }
+}
+["week", "sport", "resFilter", "mktFilter"].forEach(id => $(id).onchange = renderAll);
+$("refresh").onclick = load;
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

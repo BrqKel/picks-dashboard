@@ -121,7 +121,9 @@ async function grade(p) {
     let margin = score[team] - score[opp];
     if (p.market === "spread") margin += firstFloat(p.line) || 0;
     res = margin > 0 ? "W" : margin < 0 ? "L" : "P";
-    out.note = `${team} ${margin >= 0 ? "+" : ""}${margin} vs the number`;
+    out.note = p.market === "ML"
+      ? (margin === 0 ? "Tied" : `${team} ${margin > 0 ? "won" : "lost"} by ${Math.abs(margin)}`)
+      : `${team} ${margin >= 0 ? "+" : ""}${margin} vs the number`;
   } else if (p.market === "total") {
     const line = firstFloat(p.line), tot = ev.away.score + ev.home.score, over = /over/i.test(p.pick);
     const diff = over ? tot - line : line - tot;

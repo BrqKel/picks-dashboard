@@ -1,5 +1,5 @@
 {
- "exported": "2026-10-27T14:23:16-04:00",
+ "exported": "2026-10-27T14:33:50-04:00",
  "picks": [
   {
    "id": 0,
@@ -2147,6 +2147,51 @@
  "tickets": [
   {
    "id": 0,
+   "slug": "2026-10-27-nba-3-leg-treble-with-por-lal-bet-builder",
+   "date": "2026-10-27",
+   "sport": "NBA",
+   "name": "3-leg treble with POR/LAL bet builder",
+   "book": "Bet365",
+   "stake": 5.0,
+   "returns": 74.73,
+   "legRefs": [
+    {
+     "game": "POR @ LAL",
+     "pick": "Ja Morant over assists"
+    },
+    {
+     "game": "POR @ LAL",
+     "pick": "Deni Avdija over PRA"
+    },
+    {
+     "game": "BKN @ BOS",
+     "pick": "Paul George over rebounds"
+    },
+    {
+     "game": "DET @ NY",
+     "pick": "DET spread"
+    }
+   ],
+   "override": "",
+   "notes": {
+    "file": "2026-10-27 NBA treble Bet365",
+    "reasoning": {
+     "summary": "",
+     "legs": {
+      "POR @ LAL: Ja Morant over assists": "7+ (o6.5). LS 15/20, L10 8/10, 7 and 8 this season in 23-27 min. LAL allowed PG ast 9.0 vs 8.5 (#6) in 2025-26 (low relevance after roster changes). Lean.",
+      "POR @ LAL: Deni Avdija over PRA": "35+ (o34.5). LS 43/69, L10 8/10; Sharpe out raises usage. Lean. Positively correlated with Morant (priced into the builder).",
+      "BKN @ BOS: Paul George over rebounds": "5+ (o4.5). 5, 7, 5 this season; LS 23/38; L10 8/10. Flags: BOS on a B2B, -12.5 blowout risk, no BKN defense-vs-position note. Lean.",
+      "DET @ NY: DET spread": "+4.5. Model DET by ~0.7 (DET 3-0 +12.7/g, NY 0-3), ~58% cover after dog haircut vs 53.5% implied. Duren out. Watch Ausar Thompson (DTD). Lean."
+     }
+    },
+    "review": {
+     "summary": "",
+     "legs": {}
+    }
+   }
+  },
+  {
+   "id": 1,
    "slug": "2026-10-26-nba-4-leg-spreads-placed-at-the-4-30-pm-prices-book-unconfirmed",
    "date": "2026-10-26",
    "sport": "NBA",
@@ -2191,7 +2236,7 @@
    }
   },
   {
-   "id": 1,
+   "id": 2,
    "slug": "2026-10-25-nfl-9-fold-ml-25-acca-boost",
    "date": "2026-10-25",
    "sport": "NFL",
@@ -2265,7 +2310,7 @@
    }
   },
   {
-   "id": 2,
+   "id": 3,
    "slug": "2026-10-25-nba-3-leg-safer-stake-unconfirmed",
    "date": "2026-10-25",
    "sport": "NBA",
@@ -2308,7 +2353,7 @@
    }
   },
   {
-   "id": 3,
+   "id": 4,
    "slug": "2026-10-25-nba-5-fold-with-ind-bkn-bet-builder",
    "date": "2026-10-25",
    "sport": "NBA",
@@ -2367,7 +2412,7 @@
    }
   },
   {
-   "id": 4,
+   "id": 5,
    "slug": "2026-10-24-nba-5-leg-sides",
    "date": "2026-10-24",
    "sport": "NBA",
@@ -2421,7 +2466,7 @@
    }
   },
   {
-   "id": 5,
+   "id": 6,
    "slug": "2026-10-23-nba-7-leg-overs-props",
    "date": "2026-10-23",
    "sport": "NBA",
@@ -2485,7 +2530,7 @@
    }
   },
   {
-   "id": 6,
+   "id": 7,
    "slug": "2026-10-23-nba-9-leg-v2-ml-spread",
    "date": "2026-10-23",
    "sport": "NBA",

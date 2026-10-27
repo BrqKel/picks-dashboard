@@ -1,5 +1,5 @@
 {
- "exported": "2026-10-26T20:37:15-04:00",
+ "exported": "2026-10-26T23:32:50-04:00",
  "picks": [
   {
    "id": 0,
@@ -19,8 +19,8 @@
    "superseded": false,
    "lenses": "D",
    "market": "spread",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "OKC 125-114 (PHX by -11)",
+   "loggedResult": "L"
   },
   {
    "id": 1,
@@ -61,8 +61,8 @@
    "superseded": false,
    "lenses": "A, B",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "3 3PM (3-6, 24m)",
+   "loggedResult": "W"
   },
   {
    "id": 3,
@@ -82,8 +82,8 @@
    "superseded": false,
    "lenses": "A, B",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "1 3PM (1-6, 31m)",
+   "loggedResult": "L"
   },
   {
    "id": 4,
@@ -103,8 +103,8 @@
    "superseded": false,
    "lenses": "A",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "14 pts (37m); graded at logged 13.5",
+   "loggedResult": "W"
   },
   {
    "id": 5,
@@ -124,8 +124,8 @@
    "superseded": false,
    "lenses": "A",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "2 pts (4m)",
+   "loggedResult": "L"
   },
   {
    "id": 6,
@@ -145,8 +145,8 @@
    "superseded": false,
    "lenses": "D",
    "market": "spread",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "BOS 134-99 (CHI by -35)",
+   "loggedResult": "L"
   },
   {
    "id": 7,
@@ -166,8 +166,8 @@
    "superseded": false,
    "lenses": "D",
    "market": "spread",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "HOU 120-110 (ATL by -10)",
+   "loggedResult": "L"
   },
   {
    "id": 8,
@@ -208,8 +208,8 @@
    "superseded": false,
    "lenses": "D",
    "market": "total",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "212 total (MIL 110-102)",
+   "loggedResult": "W"
   },
   {
    "id": 10,
@@ -229,8 +229,8 @@
    "superseded": false,
    "lenses": "A, B, D",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "9 ast (37m)",
+   "loggedResult": "W"
   },
   {
    "id": 11,
@@ -250,8 +250,8 @@
    "superseded": false,
    "lenses": "A, B",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "7 ast (38m)",
+   "loggedResult": "L"
   },
   {
    "id": 12,
@@ -292,8 +292,8 @@
    "superseded": false,
    "lenses": "A",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "DNP (ruled out)",
+   "loggedResult": "V"
   },
   {
    "id": 14,
@@ -313,8 +313,8 @@
    "superseded": false,
    "lenses": "A, D",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "14 reb (39m)",
+   "loggedResult": "L"
   },
   {
    "id": 15,
@@ -334,8 +334,8 @@
    "superseded": false,
    "lenses": "A, B, D",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "5 reb (28m)",
+   "loggedResult": "L"
   },
   {
    "id": 16,
@@ -355,8 +355,8 @@
    "superseded": false,
    "lenses": "A",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "3 pts (34m)",
+   "loggedResult": "L"
   },
   {
    "id": 17,
@@ -376,8 +376,8 @@
    "superseded": false,
    "lenses": "A, D",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "8 pts (15m)",
+   "loggedResult": "L"
   },
   {
    "id": 18,
@@ -397,8 +397,8 @@
    "superseded": false,
    "lenses": "A",
    "market": "prop",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "5 3PM (5-15, 41m)",
+   "loggedResult": "L"
   },
   {
    "id": 19,

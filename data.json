@@ -1,5 +1,5 @@
 {
- "exported": "2026-10-26T16:32:08-04:00",
+ "exported": "2026-10-26T20:37:15-04:00",
  "picks": [
   {
    "id": 0,
@@ -1958,6 +1958,51 @@
  "tickets": [
   {
    "id": 0,
+   "slug": "2026-10-26-nba-4-leg-spreads-placed-at-the-4-30-pm-prices-book-unconfirmed",
+   "date": "2026-10-26",
+   "sport": "NBA",
+   "name": "4-leg spreads (placed at the 4:30 PM prices, book unconfirmed)",
+   "book": "DraftKings (assumed)",
+   "stake": 5.0,
+   "returns": 65.39,
+   "legRefs": [
+    {
+     "game": "CHI @ BOS",
+     "pick": "CHI spread"
+    },
+    {
+     "game": "ATL @ HOU",
+     "pick": "ATL spread"
+    },
+    {
+     "game": "GSW @ DEN",
+     "pick": "GSW spread"
+    },
+    {
+     "game": "PHX @ OKC",
+     "pick": "PHX spread"
+    }
+   ],
+   "override": "",
+   "notes": {
+    "file": "2026-10-26 NBA 4-leg spreads",
+    "reasoning": {
+     "summary": "",
+     "legs": {
+      "CHI @ BOS: CHI spread": "+14.5 -115. Model BOS by 10.2; CHI covers about 58% after the big-dog haircut. The line moved 1 point toward BOS with no news.",
+      "ATL @ HOU: ATL spread": "+4.5 -105. Model HOU by 2.6 with Smart out; ESPN's win model agreed. Thin edge (54% vs 51%).",
+      "GSW @ DEN: GSW spread": "+7.5 -112. Model DEN by 6.0. Filler leg, about 54% vs 53%.",
+      "PHX @ OKC: PHX spread": "+8.5 -112. Re-run after OKC ruled out J. Williams, Holmgren and Wallace: model OKC by about 3.7. ESPN's win model disagreed (OKC 78.6%). Injury values are hand-set."
+     }
+    },
+    "review": {
+     "summary": "",
+     "legs": {}
+    }
+   }
+  },
+  {
+   "id": 1,
    "slug": "2026-10-25-nfl-9-fold-ml-25-acca-boost",
    "date": "2026-10-25",
    "sport": "NFL",
@@ -2031,7 +2076,7 @@
    }
   },
   {
-   "id": 1,
+   "id": 2,
    "slug": "2026-10-25-nba-3-leg-safer-stake-unconfirmed",
    "date": "2026-10-25",
    "sport": "NBA",
@@ -2074,7 +2119,7 @@
    }
   },
   {
-   "id": 2,
+   "id": 3,
    "slug": "2026-10-25-nba-5-fold-with-ind-bkn-bet-builder",
    "date": "2026-10-25",
    "sport": "NBA",
@@ -2133,7 +2178,7 @@
    }
   },
   {
-   "id": 3,
+   "id": 4,
    "slug": "2026-10-24-nba-5-leg-sides",
    "date": "2026-10-24",
    "sport": "NBA",
@@ -2187,7 +2232,7 @@
    }
   },
   {
-   "id": 4,
+   "id": 5,
    "slug": "2026-10-23-nba-7-leg-overs-props",
    "date": "2026-10-23",
    "sport": "NBA",
@@ -2251,7 +2296,7 @@
    }
   },
   {
-   "id": 5,
+   "id": 6,
    "slug": "2026-10-23-nba-9-leg-v2-ml-spread",
    "date": "2026-10-23",
    "sport": "NBA",

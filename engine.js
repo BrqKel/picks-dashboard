@@ -44,7 +44,8 @@ async function scoreboard(sport, date) {
       const ab = norm(sport, t.team.abbreviation);
       teams[t.homeAway] = { abbr: ab, name: t.team.shortDisplayName || ab, score: st.state !== "pre" && /^\d+$/.test(String(t.score ?? "")) ? +t.score : null };
     }
-    return { id: e.id, sport, date, start: e.date, state: st.state, detail: st.shortDetail || "", completed: !!st.completed, away: teams.away, home: teams.home };
+    return { id: e.id, sport, date, start: e.date, state: st.state, detail: st.shortDetail || "", completed: !!st.completed, away: teams.away, home: teams.home,
+             elapsed: elapsedOf(sport, st.state, c.status.period, c.status.clock) };
   });
   if (evs.length && evs.every((e) => e.completed) && date < todayET()) pin(url);
   return evs;
@@ -121,6 +122,7 @@ async function grade(p) {
     let margin = score[team] - score[opp];
     if (p.market === "spread") margin += firstFloat(p.line) || 0;
     res = margin > 0 ? "W" : margin < 0 ? "L" : "P";
+    out.prog = { kind: "margin", value: margin, unit: team, spread: p.market === "spread" };
     out.note = p.market === "ML"
       ? (margin === 0 ? "Tied" : `${team} ${margin > 0 ? "won" : "lost"} by ${Math.abs(margin)}`)
       : `${team} ${margin >= 0 ? "+" : ""}${margin} vs the number`;
@@ -128,6 +130,7 @@ async function grade(p) {
     const line = firstFloat(p.line), tot = ev.away.score + ev.home.score, over = /over/i.test(p.pick);
     const diff = over ? tot - line : line - tot;
     res = diff > 0 ? "W" : diff < 0 ? "L" : "P";
+    out.prog = { kind: "count", value: tot, line, side: over ? "over" : "under", unit: "total" };
     out.note = `${tot} total vs ${line}`;
   } else if (p.market === "prop") {
     const m = p.pick.match(/^(.+?)\s+(over|under)\s+(.+?)(?:\s*\(.*\))?$/i);
@@ -145,6 +148,7 @@ async function grade(p) {
       else {
         const diff = side === "over" ? val - line : line - val;
         res = diff > 0 ? "W" : diff < 0 ? "L" : "P";
+        out.prog = { kind: "count", value: val, line, side, unit: stat };
         out.note = `${val} vs ${line}${stats.MIN ? ` (${stats.MIN}m)` : ""}`;
       }
     }
@@ -169,7 +173,7 @@ async function buildFeed(raw) {
     Object.assign(p, {
       status: g.status, autoResult: g.auto, liveResult: g.live, note: g.note || p.loggedActual,
       score: ev && ev.away.score != null ? `${ev.away.abbr} ${ev.away.score} - ${ev.home.abbr} ${ev.home.score}` : "",
-      detail: ev ? ev.detail : "",
+      detail: ev ? ev.detail : "", prog: g.prog || null, elapsed: ev ? ev.elapsed : null, start: ev ? ev.start : "",
     });
     if (["W", "L", "P", "V"].includes(logged)) { p.result = logged; p.source = "log"; }
     else if (g.auto) { p.result = g.auto; p.source = "auto"; }
@@ -181,7 +185,8 @@ async function buildFeed(raw) {
     const legs = t.legRefs.map(({ game, pick }) => {
       const p = byRef.get(`${t.date}|${game}|${pick}`);
       return p ? { game, pick, found: true, result: p.result, live: p.liveResult, status: p.status, score: p.score, detail: p.detail, note: p.note, line: p.line, price: p.price,
-                   implied: p.implied, odds: p.odds, market: p.market, dataLean: p.dataLean, media: p.media, final: p.final, lenses: p.lenses, source: p.source, actual: p.loggedActual }
+                   implied: p.implied, odds: p.odds, market: p.market, dataLean: p.dataLean, media: p.media, final: p.final, lenses: p.lenses, source: p.source, actual: p.loggedActual,
+                   prog: p.prog, elapsed: p.elapsed, start: p.start }
                : { game, pick, found: false, result: "", live: "", status: "missing", score: "", detail: "", note: "Not in Pick Log", line: "", price: "" };
     });
     const res = legs.map((l) => l.result);
@@ -198,7 +203,7 @@ async function buildFeed(raw) {
     if (!m || p.superseded || !(p.status === "live" || p.status === "scheduled" || p.date >= recent)) continue;
     const k = p.sport + "|" + [norm(p.sport, m[1]), norm(p.sport, m[2])].sort().join("|");
     if (!picked.has(k)) picked.set(k, []);
-    picked.get(k).push({ pick: p.pick, line: p.line, result: p.result, live: p.liveResult });
+    picked.get(k).push({ pick: p.pick, line: p.line, result: p.result, live: p.liveResult, status: p.status, prog: p.prog, elapsed: p.elapsed, start: p.start, detail: p.detail });
   }
   for (const [s, evs] of Object.entries(games))
     for (const e of evs) if (e.away && e.home) e.picks = picked.get(s + "|" + [e.away.abbr, e.home.abbr].sort().join("|")) || [];
@@ -208,6 +213,70 @@ async function buildFeed(raw) {
     weeks: [...new Set(picks.map((p) => weekStart(p.date)))].sort().reverse(),
   };
 }
+
+// ---- progress bars: one per pick, shared by both pages ----
+const REG = { NBA: [4, 720], NFL: [4, 900], NHL: [3, 1200] }; // regulation periods, seconds each
+const MARGIN_RANGE = { NBA: 20, NFL: 17, NHL: 4 };
+// Share of regulation played (0-1); overtime counts as 1.
+function elapsedOf(sport, state, period, clock) {
+  if (state === "pre") return 0;
+  if (state !== "in" || !REG[sport]) return 1;
+  const [n, len] = REG[sport];
+  if (!period || period > n) return period > n ? 1 : 0;
+  return Math.min(1, Math.max(0, ((period - 1) * len + (len - (+clock || 0))) / (n * len)));
+}
+const escH = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const r1 = (v) => Math.round(v * 10) / 10;
+
+// p: { prog, elapsed, status, result, live, detail, start, sport }. Empty string when there's nothing to show.
+function progressBar(p) {
+  const g = p.prog, clock = p.status === "live" && p.elapsed != null ? `<div class="pb-clock"><span style="width:${(p.elapsed * 100).toFixed(1)}%"></span></div>` : "";
+  if (!g) {
+    if (p.status !== "scheduled") return "";
+    const t = p.start ? new Date(p.start).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
+    return `<div class="pbar wait"><div class="pb-track"></div><div class="pb-txt"><span>Not started</span><span>${t}</span></div></div>`;
+  }
+  const final = !!p.result, live = p.status === "live";
+  let track, label, aside = live ? escH(p.detail) : final ? "Final" : "", tone, aria;
+  if (g.kind === "count") {
+    const pace = live && p.elapsed >= 0.15 && p.elapsed < 1 ? g.value / p.elapsed : null;
+    const scale = Math.max(g.line * 1.25, g.value * 1.05, 1), w = (v) => Math.min(100, (v / scale) * 100).toFixed(1);
+    const over = g.side === "over", hit = over ? g.value > g.line : g.value < g.line;
+    tone = final ? { W: "good", L: "bad" }[p.result] || "flat"
+      : over ? (hit ? "good" : pace != null && pace < g.line ? "warn" : "on")
+      : (!hit ? "bad" : pace != null && pace >= g.line ? "warn" : "on");
+    track = `${pace != null ? `<span class="pb-pace" style="width:${w(pace)}%"></span>` : ""}<span class="pb-fill" style="width:${w(g.value)}%"></span><span class="pb-line" style="left:${w(g.line)}%"></span>`;
+    const need = over ? Math.max(0, Math.floor(g.line) + 1 - g.value) : null;
+    label = `<b>${r1(g.value)}</b> / ${g.line} ${escH(g.unit)}${!final && over ? (hit ? " · cleared" : ` · ${need} to go`) : ""}`;
+    if (pace != null) aside = `pace ${r1(pace)} · ${aside}`;
+    aria = `${g.value} of ${g.line} ${g.unit}, ${g.side}`;
+  } else {
+    const range = Math.max(MARGIN_RANGE[p.sport] || 10, Math.abs(g.value)), half = Math.min(50, (Math.abs(g.value) / range) * 50);
+    tone = final ? { W: "good", L: "bad" }[p.result] || "flat" : g.value > 0 ? "good" : g.value < 0 ? "bad" : "flat";
+    track = `<span class="pb-mid"></span><span class="pb-fill" style="left:${g.value >= 0 ? 50 : 50 - half}%;width:${half.toFixed(1)}%"></span>`;
+    const a = r1(Math.abs(g.value)), team = escH(g.unit);
+    label = g.value === 0 ? `${team} ${g.spread ? "on the number" : "tied"}`
+      : g.spread ? `${team} ${g.value > 0 ? "covering by" : "short by"} <b>${a}</b>` : `${team} ${g.value > 0 ? "up" : "down"} <b>${a}</b>`;
+    aria = `${g.unit} margin ${g.value}`;
+  }
+  return `<div class="pbar ${tone}${g.kind === "margin" ? " margin" : ""}" role="img" aria-label="${escH(aria)}">
+    <div class="pb-track">${track}</div>${clock}<div class="pb-txt"><span>${label}</span><span>${aside}</span></div></div>`;
+}
+
+document.head.insertAdjacentHTML("beforeend", `<style>
+.pbar { margin-top: 6px; min-width: 150px; max-width: 360px; font-size: 12px; font-variant-numeric: tabular-nums; --tone: var(--series-1); }
+.pbar.good { --tone: var(--good); } .pbar.bad { --tone: var(--critical); } .pbar.warn { --tone: var(--warning); } .pbar.flat { --tone: var(--muted); }
+.pb-track { position: relative; height: 8px; border-radius: 4px; background: var(--grid); overflow: hidden; }
+.pb-fill, .pb-pace { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 4px; background: var(--tone); transition: width .6s ease, left .6s ease; }
+.pb-pace { opacity: .28; }
+.pb-line { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: var(--ink); }
+.pb-mid { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--axis); }
+.pb-clock { height: 2px; margin-top: 2px; background: var(--grid); border-radius: 1px; overflow: hidden; }
+.pb-clock span { display: block; height: 100%; background: var(--muted); }
+.pb-txt { display: flex; justify-content: space-between; gap: 8px; margin-top: 3px; color: var(--ink-2); }
+.pb-txt span:last-child { color: var(--muted); text-align: right; }
+@media (prefers-reduced-motion: reduce) { .pb-fill, .pb-pace { transition: none; } }
+</style>`);
 
 // Fetch the vault export and build the graded feed. Keeps the last good copy.
 let _raw = null;

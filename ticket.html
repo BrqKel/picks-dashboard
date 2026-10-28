@@ -199,7 +199,7 @@ function render() {
           <div class="leg-sub">${esc(l.game)} · ${esc(MARKET[l.market] || "")}${l.price ? " · " + esc(l.price) : ""}${l.implied != null ? " · " + pct(l.implied) + " implied" : ""}</div></div>
           ${badge(l.result, l.status, l.live)}
         </div>
-        <div class="result-line"><span class="sec">Result:</span> ${resultLine}${l.source === "auto" ? ' <span class="muted">(graded automatically)</span>' : ""}</div>
+        <div class="result-line"><span class="sec">Result:</span> ${resultLine}${l.source === "auto" ? ' <span class="muted">(graded automatically)</span>' : ""}${progressBar({ ...l, sport: t.sport })}</div>
         ${why ? `<div class="note prose"><span class="lab">Why this pick</span>${md(why)}</div>` : ""}
         ${rows.length ? `<dl class="why">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : `<div class="empty">This leg isn't in the Pick Log, so there's no data lean to show.</div>`}
         ${miss ? `<div class="note bad prose"><span class="lab">What went wrong</span>${md(miss)}</div>` : ""}

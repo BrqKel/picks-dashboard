@@ -69,6 +69,7 @@ td.num, th.num { text-align: right; }
 .ticket:hover .hint, .ticket:focus-visible .hint { color: var(--series-1); }
 @media (prefers-reduced-motion: reduce) { .ticket { transition: none; } }
 .ticket li { display: flex; gap: 8px; justify-content: space-between; padding: 3px 0; border-top: 1px solid var(--grid); font-size: 13px; }
+.ticket li > .badge { flex-shrink: 0; align-self: flex-start; }
 .games { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); }
 .game { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
 .game.has { border-color: var(--series-1); }
@@ -200,7 +201,7 @@ function renderTickets() {
     const st = t.status === "W" ? `<span class="badge W">✓ Won ${money(t.returns)}</span>` : t.status === "L" ? `<span class="badge L">✕ Lost</span>` : `<span class="badge live">● Open · ${t.pending} to go</span>`;
     return `<a class="ticket" href="ticket.html#${encodeURIComponent(t.slug)}" aria-label="${esc(t.name)}: open the full breakdown"><div class="top"><div><b>${esc(t.name)}</b><div class="muted">${t.date} · ${t.sport} · ${esc(t.book)} · ${money(t.stake)} → ${money(t.returns)}</div></div>${st}</div>
       <div class="sec" style="font-size:12px;margin-top:4px">${t.won} won · ${t.lost} lost · ${t.pending} pending</div>
-      <ul>${t.legs.map(l => `<li><span>${esc(l.pick)} <span class="muted">${esc(l.line)} · ${esc(l.game)}</span><br><span class="muted">${esc(l.score || l.detail || l.note)}</span></span>${badge({ result: l.result, status: l.status, liveResult: l.live })}</li>`).join("")}</ul>
+      <ul>${t.legs.map(l => `<li><span style="flex:1;min-width:0">${esc(l.pick)} <span class="muted">${esc(l.line)} · ${esc(l.game)}</span><br><span class="muted">${esc(l.score || l.detail || l.note)}</span>${progressBar({ ...l, sport: t.sport })}</span>${badge({ result: l.result, status: l.status, liveResult: l.live })}</li>`).join("")}</ul>
       <span class="hint">${t.status === "L" ? "Reasoning, results &amp; review" : "Reasoning &amp; results"} →</span></a>`;
   }).join("") : `<div class="muted">No tickets in Picks/Tickets.md for this filter.</div>`;
 }
@@ -214,7 +215,7 @@ function renderGames() {
       <div class="sc"><span>${esc(e.away?.abbr)}</span><b>${e.away?.score ?? ""}</b></div>
       <div class="sc"><span>@ ${esc(e.home?.abbr)}</span><b>${e.home?.score ?? ""}</b></div>
       <div class="muted">${esc(e.detail)}</div>
-      ${(e.picks || []).map(p => `<div style="margin-top:4px">${esc(p.pick)} <span class="muted">${esc(p.line)}</span> ${badge({ result: p.result, status: e.state === "in" ? "live" : e.state === "pre" ? "scheduled" : "", liveResult: p.live })}</div>`).join("")}
+      ${(e.picks || []).map(p => `<div style="margin-top:6px">${esc(p.pick)} <span class="muted">${esc(p.line)}</span> ${badge({ result: p.result, status: e.state === "in" ? "live" : e.state === "pre" ? "scheduled" : "", liveResult: p.live })}${progressBar({ ...p, sport: s })}</div>`).join("")}
     </div>`).join("")}</div>` : `<div class="muted">No games today.</div>`}`).join("");
 }
 
@@ -304,7 +305,7 @@ function renderPicks(ps) {
   $("pickCount").textContent = `(${list.length})`;
   $("picks").innerHTML = `<tr><th>Date</th><th>Sport</th><th>Game</th><th>Pick</th><th>Line</th><th>Price</th><th class="num">Implied</th><th>Lean</th><th>Score / actual</th><th>Result</th></tr>` +
     list.map(p => `<tr><td>${p.date}</td><td><span class="dot" style="background:${SPORT_COLOR[p.sport] || "var(--muted)"}"></span>${p.sport}</td><td>${esc(p.game)}</td><td>${esc(p.pick)}</td><td>${esc(p.line)}</td><td>${esc(p.price)}</td>
-      <td class="num">${pct(p.implied)}</td><td class="sec">${esc(p.final)}</td><td class="sec">${esc(p.loggedActual || p.note || p.score)}${p.status === "live" ? `<br><span class="muted">${esc(p.score)} · ${esc(p.detail)}</span>` : ""}</td><td>${badge(p)}</td></tr>`).join("");
+      <td class="num">${pct(p.implied)}</td><td class="sec">${esc(p.final)}</td><td class="sec">${esc(p.loggedActual || p.note || p.score)}${p.status === "live" ? `<br><span class="muted">${esc(p.score)} · ${esc(p.detail)}</span>` : ""}${progressBar({ ...p, live: p.liveResult })}</td><td>${badge(p)}</td></tr>`).join("");
 }
 
 function renderAll() {

@@ -1,0 +1,13 @@
+/* Progress bars drawn by progressBar() in engine.js; colors come from each page's tokens. */
+.pbar { margin-top: 6px; min-width: 150px; max-width: 360px; font-size: 12px; font-variant-numeric: tabular-nums; --tone: var(--series-1); }
+.pbar.good { --tone: var(--good); } .pbar.bad { --tone: var(--critical); } .pbar.warn { --tone: var(--warning); } .pbar.flat { --tone: var(--muted); }
+.pb-track { position: relative; height: 8px; border-radius: 4px; background: var(--grid); overflow: hidden; }
+.pb-fill, .pb-pace { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 4px; background: var(--tone); transition: width .6s ease, left .6s ease; }
+.pb-pace { opacity: .28; }
+.pb-line { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: var(--ink); }
+.pb-mid { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--axis); }
+.pb-clock { height: 2px; margin-top: 2px; background: var(--grid); border-radius: 1px; overflow: hidden; }
+.pb-clock span { display: block; height: 100%; background: var(--muted); }
+.pb-txt { display: flex; justify-content: space-between; gap: 8px; margin-top: 3px; color: var(--ink-2); }
+.pb-txt span:last-child { color: var(--muted); text-align: right; }
+@media (prefers-reduced-motion: reduce) { .pb-fill, .pb-pace { transition: none; } }

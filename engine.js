@@ -120,7 +120,11 @@ async function grade(p) {
     if (!(team in score)) { out.note = `${team} not in this game`; return out; }
     const opp = Object.keys(score).find((t) => t !== team);
     let margin = score[team] - score[opp];
-    if (p.market === "spread") margin += firstFloat(p.line) || 0;
+    if (p.market === "spread") {
+      const line = firstFloat(p.line);
+      if (line == null) { out.note = "Spread line missing"; return out; }
+      margin += line;
+    }
     res = margin > 0 ? "W" : margin < 0 ? "L" : "P";
     out.prog = { kind: "margin", value: margin, unit: team, spread: p.market === "spread" };
     out.note = p.market === "ML"
@@ -128,6 +132,7 @@ async function grade(p) {
       : `${team} ${margin >= 0 ? "+" : ""}${margin} vs the number`;
   } else if (p.market === "total") {
     const line = firstFloat(p.line), tot = ev.away.score + ev.home.score, over = /over/i.test(p.pick);
+    if (line == null) { out.note = "Total line missing"; return out; }
     const diff = over ? tot - line : line - tot;
     res = diff > 0 ? "W" : diff < 0 ? "L" : "P";
     out.prog = { kind: "count", value: tot, line, side: over ? "over" : "under", unit: "total" };
@@ -174,6 +179,7 @@ async function buildFeed(raw) {
       status: g.status, autoResult: g.auto, liveResult: g.live, note: g.note || p.loggedActual,
       score: ev && ev.away.score != null ? `${ev.away.abbr} ${ev.away.score} - ${ev.home.abbr} ${ev.home.score}` : "",
       detail: ev ? ev.detail : "", prog: g.prog || null, elapsed: ev ? ev.elapsed : null, start: ev ? ev.start : "",
+      eventId: ev ? ev.id : "", live: g.live, actual: p.loggedActual,
     });
     if (["W", "L", "P", "V"].includes(logged)) { p.result = logged; p.source = "log"; }
     else if (g.auto) { p.result = g.auto; p.source = "auto"; }
@@ -184,10 +190,8 @@ async function buildFeed(raw) {
   const tickets = raw.tickets.map((t) => {
     const legs = t.legRefs.map(({ game, pick }) => {
       const p = byRef.get(`${t.date}|${game}|${pick}`);
-      return p ? { game, pick, found: true, result: p.result, live: p.liveResult, status: p.status, score: p.score, detail: p.detail, note: p.note, line: p.line, price: p.price,
-                   implied: p.implied, odds: p.odds, market: p.market, dataLean: p.dataLean, media: p.media, final: p.final, lenses: p.lenses, source: p.source, actual: p.loggedActual,
-                   prog: p.prog, elapsed: p.elapsed, start: p.start }
-               : { game, pick, found: false, result: "", live: "", status: "missing", score: "", detail: "", note: "Not in Pick Log", line: "", price: "" };
+      return p ? { ...p, found: true }
+               :{ game, pick, found: false, result: "", live: "", status: "missing", score: "", detail: "", note: "Not in Pick Log", line: "", price: "" };
     });
     const res = legs.map((l) => l.result);
     const status = t.override || (res.includes("L") ? "L" : legs.length && res.every((r) => ["W", "P", "V"].includes(r)) ? "W" : "open");
@@ -197,16 +201,15 @@ async function buildFeed(raw) {
 
   const games = {};
   await Promise.all(Object.keys(SPORTS).map(async (s) => { games[s] = await scoreboard(s, today); }));
+  // Attach picks by the ESPN event they were graded against, so a same-teams game on another day never borrows them.
   const picked = new Map();
   for (const p of picks) {
-    const m = p.game.match(GAME_RE);
-    if (!m || p.superseded || !(p.status === "live" || p.status === "scheduled" || p.date >= recent)) continue;
-    const k = p.sport + "|" + [norm(p.sport, m[1]), norm(p.sport, m[2])].sort().join("|");
-    if (!picked.has(k)) picked.set(k, []);
-    picked.get(k).push({ pick: p.pick, line: p.line, result: p.result, live: p.liveResult, status: p.status, prog: p.prog, elapsed: p.elapsed, start: p.start, detail: p.detail });
+    if (!p.eventId || p.superseded) continue;
+    if (!picked.has(p.eventId)) picked.set(p.eventId, []);
+    picked.get(p.eventId).push(p);
   }
-  for (const [s, evs] of Object.entries(games))
-    for (const e of evs) if (e.away && e.home) e.picks = picked.get(s + "|" + [e.away.abbr, e.home.abbr].sort().join("|")) || [];
+  for (const evs of Object.values(games))
+    for (const e of evs) e.picks = picked.get(e.id) || [];
 
   return {
     generated: new Date().toISOString(), exported: raw.exported, today, picks, tickets, games,
@@ -225,58 +228,45 @@ function elapsedOf(sport, state, period, clock) {
   if (!period || period > n) return period > n ? 1 : 0;
   return Math.min(1, Math.max(0, ((period - 1) * len + (len - (+clock || 0))) / (n * len)));
 }
-const escH = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); // used by both pages too
 const r1 = (v) => Math.round(v * 10) / 10;
 
-// p: { prog, elapsed, status, result, live, detail, start, sport }. Empty string when there's nothing to show.
+// p: { prog, elapsed, status, result, detail, start, sport }. Empty string when there's nothing to show. Styles: progress.css.
 function progressBar(p) {
   const g = p.prog, clock = p.status === "live" && p.elapsed != null ? `<div class="pb-clock"><span style="width:${(p.elapsed * 100).toFixed(1)}%"></span></div>` : "";
   if (!g) {
     if (p.status !== "scheduled") return "";
     const t = p.start ? new Date(p.start).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
-    return `<div class="pbar wait"><div class="pb-track"></div><div class="pb-txt"><span>Not started</span><span>${t}</span></div></div>`;
+    return `<div class="pbar"><div class="pb-track"></div><div class="pb-txt"><span>Not started</span><span>${t}</span></div></div>`;
   }
   const final = !!p.result, live = p.status === "live";
-  let track, label, aside = live ? escH(p.detail) : final ? "Final" : "", tone, aria;
+  let track, label, aside = live ? esc(p.detail) : final ? "Final" : "", tone, aria;
   if (g.kind === "count") {
     const pace = live && p.elapsed >= 0.15 && p.elapsed < 1 ? g.value / p.elapsed : null;
     const scale = Math.max(g.line * 1.25, g.value * 1.05, 1), w = (v) => Math.min(100, (v / scale) * 100).toFixed(1);
     const over = g.side === "over", hit = over ? g.value > g.line : g.value < g.line;
+    // An under sitting exactly on a whole-number line is a push so far, not a loss.
     tone = final ? { W: "good", L: "bad" }[p.result] || "flat"
       : over ? (hit ? "good" : pace != null && pace < g.line ? "warn" : "on")
-      : (!hit ? "bad" : pace != null && pace >= g.line ? "warn" : "on");
+      : g.value > g.line ? "bad" : g.value === g.line ? "flat" : pace != null && pace >= g.line ? "warn" : "on";
     track = `${pace != null ? `<span class="pb-pace" style="width:${w(pace)}%"></span>` : ""}<span class="pb-fill" style="width:${w(g.value)}%"></span><span class="pb-line" style="left:${w(g.line)}%"></span>`;
     const need = over ? Math.max(0, Math.floor(g.line) + 1 - g.value) : null;
-    label = `<b>${r1(g.value)}</b> / ${g.line} ${escH(g.unit)}${!final && over ? (hit ? " · cleared" : ` · ${need} to go`) : ""}`;
+    label = `<b>${r1(g.value)}</b> / ${g.line} ${esc(g.unit)}${!final && over ? (hit ? " · cleared" : ` · ${need} to go`) : ""}`;
     if (pace != null) aside = `pace ${r1(pace)} · ${aside}`;
     aria = `${g.value} of ${g.line} ${g.unit}, ${g.side}`;
   } else {
     const range = Math.max(MARGIN_RANGE[p.sport] || 10, Math.abs(g.value)), half = Math.min(50, (Math.abs(g.value) / range) * 50);
     tone = final ? { W: "good", L: "bad" }[p.result] || "flat" : g.value > 0 ? "good" : g.value < 0 ? "bad" : "flat";
     track = `<span class="pb-mid"></span><span class="pb-fill" style="left:${g.value >= 0 ? 50 : 50 - half}%;width:${half.toFixed(1)}%"></span>`;
-    const a = r1(Math.abs(g.value)), team = escH(g.unit);
-    label = g.value === 0 ? `${team} ${g.spread ? "on the number" : "tied"}`
-      : g.spread ? `${team} ${g.value > 0 ? "covering by" : "short by"} <b>${a}</b>` : `${team} ${g.value > 0 ? "up" : "down"} <b>${a}</b>`;
+    const a = r1(Math.abs(g.value)), team = esc(g.unit), done = p.status === "final";
+    const words = g.spread ? (done ? ["covered by", "missed by", "pushed"] : ["covering by", "short by", "on the number"])
+      : done ? ["won by", "lost by", "tied"] : ["up", "down", "tied"];
+    label = g.value === 0 ? `${team} ${words[2]}` : `${team} ${words[g.value > 0 ? 0 : 1]} <b>${a}</b>`;
     aria = `${g.unit} margin ${g.value}`;
   }
-  return `<div class="pbar ${tone}${g.kind === "margin" ? " margin" : ""}" role="img" aria-label="${escH(aria)}">
+  return `<div class="pbar ${tone}" role="img" aria-label="${esc(aria)}">
     <div class="pb-track">${track}</div>${clock}<div class="pb-txt"><span>${label}</span><span>${aside}</span></div></div>`;
 }
-
-document.head.insertAdjacentHTML("beforeend", `<style>
-.pbar { margin-top: 6px; min-width: 150px; max-width: 360px; font-size: 12px; font-variant-numeric: tabular-nums; --tone: var(--series-1); }
-.pbar.good { --tone: var(--good); } .pbar.bad { --tone: var(--critical); } .pbar.warn { --tone: var(--warning); } .pbar.flat { --tone: var(--muted); }
-.pb-track { position: relative; height: 8px; border-radius: 4px; background: var(--grid); overflow: hidden; }
-.pb-fill, .pb-pace { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 4px; background: var(--tone); transition: width .6s ease, left .6s ease; }
-.pb-pace { opacity: .28; }
-.pb-line { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: var(--ink); }
-.pb-mid { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--axis); }
-.pb-clock { height: 2px; margin-top: 2px; background: var(--grid); border-radius: 1px; overflow: hidden; }
-.pb-clock span { display: block; height: 100%; background: var(--muted); }
-.pb-txt { display: flex; justify-content: space-between; gap: 8px; margin-top: 3px; color: var(--ink-2); }
-.pb-txt span:last-child { color: var(--muted); text-align: right; }
-@media (prefers-reduced-motion: reduce) { .pb-fill, .pb-pace { transition: none; } }
-</style>`);
 
 // Fetch the vault export and build the graded feed. Keeps the last good copy.
 let _raw = null;

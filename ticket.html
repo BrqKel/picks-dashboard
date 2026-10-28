@@ -83,6 +83,7 @@ dl.why dd { margin: 0; min-width: 0; }
 .err { color: var(--critical-text); }
 a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
 </style>
+<link rel="stylesheet" href="progress.css">
 </head>
 <body>
 <header>
@@ -100,7 +101,6 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 <script src="engine.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const money = (v) => "$" + (v ?? 0).toFixed(2);
 const pct = (v) => (v == null ? "–" : Math.round(v * 100) + "%");
 const MARKET = { ML: "Moneyline", spread: "Spread", total: "Total", prop: "Player prop", other: "Other" };
@@ -199,7 +199,7 @@ function render() {
           <div class="leg-sub">${esc(l.game)} · ${esc(MARKET[l.market] || "")}${l.price ? " · " + esc(l.price) : ""}${l.implied != null ? " · " + pct(l.implied) + " implied" : ""}</div></div>
           ${badge(l.result, l.status, l.live)}
         </div>
-        <div class="result-line"><span class="sec">Result:</span> ${resultLine}${l.source === "auto" ? ' <span class="muted">(graded automatically)</span>' : ""}${progressBar({ ...l, sport: t.sport })}</div>
+        <div class="result-line"><span class="sec">Result:</span> ${resultLine}${l.source === "auto" ? ' <span class="muted">(graded automatically)</span>' : ""}${progressBar(l)}</div>
         ${why ? `<div class="note prose"><span class="lab">Why this pick</span>${md(why)}</div>` : ""}
         ${rows.length ? `<dl class="why">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : `<div class="empty">This leg isn't in the Pick Log, so there's no data lean to show.</div>`}
         ${miss ? `<div class="note bad prose"><span class="lab">What went wrong</span>${md(miss)}</div>` : ""}

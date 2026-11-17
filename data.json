@@ -1,5 +1,5 @@
 {
- "exported": "2026-11-16T14:38:34-05:00",
+ "exported": "2026-11-17T09:36:03-05:00",
  "picks": [
   {
    "id": 0,
@@ -19,8 +19,8 @@
    "superseded": false,
    "lenses": "D",
    "market": "spread",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "ORL 115-105 (BOS by -10)",
+   "loggedResult": "L"
   },
   {
    "id": 1,
@@ -40,8 +40,8 @@
    "superseded": false,
    "lenses": "D",
    "market": "spread",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "PHI 135-123 (BKN by -12)",
+   "loggedResult": "L"
   },
   {
    "id": 2,
@@ -61,8 +61,8 @@
    "superseded": false,
    "lenses": "D",
    "market": "spread",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "MEM 136-120 (MEM by +16)",
+   "loggedResult": "W"
   },
   {
    "id": 3,
@@ -82,8 +82,8 @@
    "superseded": false,
    "lenses": "D",
    "market": "spread",
-   "loggedActual": "",
-   "loggedResult": ""
+   "loggedActual": "NO 115-94 (GS by -21)",
+   "loggedResult": "L"
   },
   {
    "id": 4,

@@ -1,8 +1,176 @@
 {
- "exported": "2026-11-17T09:36:03-05:00",
+ "exported": "2026-11-24T14:52:21-05:00",
  "picks": [
   {
    "id": 0,
+   "date": "2026-11-24",
+   "agent": "Sofa",
+   "sport": "NBA",
+   "game": "DET @ ORL",
+   "pick": "Franz Wagner over assists",
+   "line": "5.5",
+   "price": "-218 (DraftKings)",
+   "odds": -218,
+   "implied": 0.6859999999999999,
+   "dataLean": "Lean over (L10 9/10, avg 8.2; Banchero out; ORL B2B)",
+   "media": "Not checked",
+   "slip": "anchor 3-leg + ideal 5-leg",
+   "final": "Lean",
+   "superseded": false,
+   "lenses": "A, B",
+   "market": "prop",
+   "loggedActual": "",
+   "loggedResult": ""
+  },
+  {
+   "id": 1,
+   "date": "2026-11-24",
+   "agent": "Sofa",
+   "sport": "NBA",
+   "game": "DET @ ORL",
+   "pick": "Franz Wagner over assists",
+   "line": "6.5",
+   "price": "-119 (DraftKings)",
+   "odds": -119,
+   "implied": 0.5429999999999999,
+   "dataLean": "Lean over (L10 7/10, season 10/16)",
+   "media": "Not checked",
+   "slip": "value 3-leg",
+   "final": "Lean",
+   "superseded": false,
+   "lenses": "A",
+   "market": "prop",
+   "loggedActual": "",
+   "loggedResult": ""
+  },
+  {
+   "id": 2,
+   "date": "2026-11-24",
+   "agent": "Sofa",
+   "sport": "NBA",
+   "game": "DET @ ORL",
+   "pick": "Paul Reed Jr over rebounds",
+   "line": "5.5",
+   "price": "-219 (DraftKings)",
+   "odds": -219,
+   "implied": 0.687,
+   "dataLean": "Slight lean over (L10 8/10; Duren out; ORL tough on C reb)",
+   "media": "Not checked",
+   "slip": "ideal 5-leg",
+   "final": "Slight lean",
+   "superseded": false,
+   "lenses": "A, D",
+   "market": "prop",
+   "loggedActual": "",
+   "loggedResult": ""
+  },
+  {
+   "id": 3,
+   "date": "2026-11-24",
+   "agent": "Sofa",
+   "sport": "NBA",
+   "game": "BOS @ WSH",
+   "pick": "Anthony Davis over rebounds",
+   "line": "7.5",
+   "price": "-343 (DraftKings)",
+   "odds": -343,
+   "implied": 0.774,
+   "dataLean": "Slight lean over (L10 8/10; BOS F reb +17%; M. Robinson out; blowout risk)",
+   "media": "Not checked",
+   "slip": "anchor 3-leg + ideal 5-leg",
+   "final": "Slight lean",
+   "superseded": false,
+   "lenses": "A, B",
+   "market": "prop",
+   "loggedActual": "",
+   "loggedResult": ""
+  },
+  {
+   "id": 4,
+   "date": "2026-11-24",
+   "agent": "Sofa",
+   "sport": "NBA",
+   "game": "BOS @ WSH",
+   "pick": "Jayson Tatum under PRA",
+   "line": "40.5",
+   "price": "-114 (DraftKings)",
+   "odds": -114,
+   "implied": 0.5329999999999999,
+   "dataLean": "Slight lean under (under 9/15; WSH tough on F pts; B2B from GS; -11.5)",
+   "media": "Not checked",
+   "slip": "value 3-leg",
+   "final": "Slight lean",
+   "superseded": false,
+   "lenses": "A, B, D",
+   "market": "prop",
+   "loggedActual": "",
+   "loggedResult": ""
+  },
+  {
+   "id": 5,
+   "date": "2026-11-24",
+   "agent": "Sofa",
+   "sport": "NBA",
+   "game": "DAL @ DEN",
+   "pick": "Nikola Jokic over assists",
+   "line": "7.5",
+   "price": "-438 (DraftKings; -340 FanDuel)",
+   "odds": -438,
+   "implied": 0.8140000000000001,
+   "dataLean": "Slight lean over (L10 9/10; total 234.5; B2B)",
+   "media": "Not checked",
+   "slip": "anchor 3-leg + ideal 5-leg",
+   "final": "Slight lean",
+   "superseded": false,
+   "lenses": "A, D",
+   "market": "prop",
+   "loggedActual": "",
+   "loggedResult": ""
+  },
+  {
+   "id": 6,
+   "date": "2026-11-24",
+   "agent": "Sofa",
+   "sport": "NBA",
+   "game": "DAL @ DEN",
+   "pick": "Daniel Gafford under rebounds",
+   "line": "6.5",
+   "price": "+102 (DraftKings)",
+   "odds": 102,
+   "implied": 0.495,
+   "dataLean": "Lean under (L10 under 9/10, season under 11/17, avg 5.4)",
+   "media": "Not checked",
+   "slip": "ideal 5-leg + value 3-leg",
+   "final": "Lean",
+   "superseded": false,
+   "lenses": "A",
+   "market": "prop",
+   "loggedActual": "",
+   "loggedResult": ""
+  },
+  {
+   "id": 7,
+   "date": "2026-11-24",
+   "agent": "Sofa",
+   "sport": "NBA",
+   "game": "DAL @ DEN",
+   "pick": "Kyrie Irving over assists",
+   "line": "3.5",
+   "price": "-288 (DraftKings)",
+   "odds": -288,
+   "implied": 0.742,
+   "dataLean": "Slight lean over (L10 9/10; DEN G ast +5%)",
+   "media": "Not checked",
+   "slip": "props list",
+   "final": "Slight lean",
+   "superseded": false,
+   "lenses": "A, B",
+   "market": "prop",
+   "loggedActual": "",
+   "loggedResult": ""
+  },
+  {
+   "id": 8,
    "date": "2026-11-16",
    "agent": "Sofa",
    "sport": "NBA",
@@ -23,7 +191,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 1,
+   "id": 9,
    "date": "2026-11-16",
    "agent": "Sofa",
    "sport": "NBA",
@@ -44,7 +212,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 2,
+   "id": 10,
    "date": "2026-11-16",
    "agent": "Sofa",
    "sport": "NBA",
@@ -65,7 +233,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 3,
+   "id": 11,
    "date": "2026-11-16",
    "agent": "Sofa",
    "sport": "NBA",
@@ -86,7 +254,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 4,
+   "id": 12,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -107,7 +275,7 @@
    "loggedResult": ""
   },
   {
-   "id": 5,
+   "id": 13,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -128,7 +296,7 @@
    "loggedResult": ""
   },
   {
-   "id": 6,
+   "id": 14,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -149,7 +317,7 @@
    "loggedResult": ""
   },
   {
-   "id": 7,
+   "id": 15,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -170,7 +338,7 @@
    "loggedResult": ""
   },
   {
-   "id": 8,
+   "id": 16,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -191,7 +359,7 @@
    "loggedResult": ""
   },
   {
-   "id": 9,
+   "id": 17,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -212,7 +380,7 @@
    "loggedResult": ""
   },
   {
-   "id": 10,
+   "id": 18,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -233,7 +401,7 @@
    "loggedResult": ""
   },
   {
-   "id": 11,
+   "id": 19,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -254,7 +422,7 @@
    "loggedResult": ""
   },
   {
-   "id": 12,
+   "id": 20,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -275,7 +443,7 @@
    "loggedResult": ""
   },
   {
-   "id": 13,
+   "id": 21,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -296,7 +464,7 @@
    "loggedResult": ""
   },
   {
-   "id": 14,
+   "id": 22,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -317,7 +485,7 @@
    "loggedResult": ""
   },
   {
-   "id": 15,
+   "id": 23,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -338,7 +506,7 @@
    "loggedResult": ""
   },
   {
-   "id": 16,
+   "id": 24,
    "date": "2026-10-28",
    "agent": "Sofa",
    "sport": "NBA",
@@ -359,7 +527,7 @@
    "loggedResult": ""
   },
   {
-   "id": 17,
+   "id": 25,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -380,7 +548,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 18,
+   "id": 26,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -401,7 +569,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 19,
+   "id": 27,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -422,7 +590,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 20,
+   "id": 28,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -443,7 +611,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 21,
+   "id": 29,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -464,7 +632,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 22,
+   "id": 30,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -485,7 +653,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 23,
+   "id": 31,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -506,7 +674,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 24,
+   "id": 32,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -527,7 +695,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 25,
+   "id": 33,
    "date": "2026-10-27",
    "agent": "Sofa",
    "sport": "NBA",
@@ -548,7 +716,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 26,
+   "id": 34,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -569,7 +737,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 27,
+   "id": 35,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -590,7 +758,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 28,
+   "id": 36,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -611,7 +779,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 29,
+   "id": 37,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -632,7 +800,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 30,
+   "id": 38,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -653,7 +821,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 31,
+   "id": 39,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -674,7 +842,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 32,
+   "id": 40,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -695,7 +863,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 33,
+   "id": 41,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -716,7 +884,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 34,
+   "id": 42,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -737,7 +905,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 35,
+   "id": 43,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -758,7 +926,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 36,
+   "id": 44,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -779,7 +947,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 37,
+   "id": 45,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -800,7 +968,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 38,
+   "id": 46,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -821,7 +989,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 39,
+   "id": 47,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -842,7 +1010,7 @@
    "loggedResult": "V"
   },
   {
-   "id": 40,
+   "id": 48,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -863,7 +1031,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 41,
+   "id": 49,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -884,7 +1052,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 42,
+   "id": 50,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -905,7 +1073,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 43,
+   "id": 51,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -926,7 +1094,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 44,
+   "id": 52,
    "date": "2026-10-26",
    "agent": "Sofa",
    "sport": "NBA",
@@ -947,7 +1115,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 45,
+   "id": 53,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NBA",
@@ -968,7 +1136,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 46,
+   "id": 54,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -989,7 +1157,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 47,
+   "id": 55,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1010,7 +1178,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 48,
+   "id": 56,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1031,7 +1199,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 49,
+   "id": 57,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1052,7 +1220,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 50,
+   "id": 58,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1073,7 +1241,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 51,
+   "id": 59,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1094,7 +1262,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 52,
+   "id": 60,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1115,7 +1283,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 53,
+   "id": 61,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1136,7 +1304,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 54,
+   "id": 62,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1157,7 +1325,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 55,
+   "id": 63,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NFL",
@@ -1178,7 +1346,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 56,
+   "id": 64,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1199,7 +1367,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 57,
+   "id": 65,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1220,7 +1388,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 58,
+   "id": 66,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1241,7 +1409,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 59,
+   "id": 67,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1262,7 +1430,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 60,
+   "id": 68,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1283,7 +1451,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 61,
+   "id": 69,
    "date": "2026-10-25",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1304,7 +1472,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 62,
+   "id": 70,
    "date": "2026-10-24",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1325,7 +1493,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 63,
+   "id": 71,
    "date": "2026-10-24",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1346,7 +1514,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 64,
+   "id": 72,
    "date": "2026-10-24",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1367,7 +1535,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 65,
+   "id": 73,
    "date": "2026-10-24",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1388,7 +1556,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 66,
+   "id": 74,
    "date": "2026-10-24",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1409,7 +1577,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 67,
+   "id": 75,
    "date": "2026-10-24",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1430,7 +1598,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 68,
+   "id": 76,
    "date": "2026-10-24",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1451,7 +1619,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 69,
+   "id": 77,
    "date": "2026-10-24",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1472,7 +1640,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 70,
+   "id": 78,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1493,7 +1661,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 71,
+   "id": 79,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1514,7 +1682,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 72,
+   "id": 80,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1535,7 +1703,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 73,
+   "id": 81,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1556,7 +1724,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 74,
+   "id": 82,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1577,7 +1745,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 75,
+   "id": 83,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1598,7 +1766,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 76,
+   "id": 84,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1619,7 +1787,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 77,
+   "id": 85,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1640,7 +1808,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 78,
+   "id": 86,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1661,7 +1829,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 79,
+   "id": 87,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1682,7 +1850,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 80,
+   "id": 88,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1703,7 +1871,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 81,
+   "id": 89,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1724,7 +1892,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 82,
+   "id": 90,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1745,7 +1913,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 83,
+   "id": 91,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1766,7 +1934,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 84,
+   "id": 92,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1787,7 +1955,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 85,
+   "id": 93,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1808,7 +1976,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 86,
+   "id": 94,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1829,7 +1997,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 87,
+   "id": 95,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1850,7 +2018,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 88,
+   "id": 96,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1871,7 +2039,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 89,
+   "id": 97,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1892,7 +2060,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 90,
+   "id": 98,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1913,7 +2081,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 91,
+   "id": 99,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1934,7 +2102,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 92,
+   "id": 100,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1955,7 +2123,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 93,
+   "id": 101,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1976,7 +2144,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 94,
+   "id": 102,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -1997,7 +2165,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 95,
+   "id": 103,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2018,7 +2186,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 96,
+   "id": 104,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2039,7 +2207,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 97,
+   "id": 105,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2060,7 +2228,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 98,
+   "id": 106,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2081,7 +2249,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 99,
+   "id": 107,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2102,7 +2270,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 100,
+   "id": 108,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2123,7 +2291,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 101,
+   "id": 109,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2144,7 +2312,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 102,
+   "id": 110,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2165,7 +2333,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 103,
+   "id": 111,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2186,7 +2354,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 104,
+   "id": 112,
    "date": "2026-10-23",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2207,7 +2375,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 105,
+   "id": 113,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2228,7 +2396,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 106,
+   "id": 114,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2249,7 +2417,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 107,
+   "id": 115,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2270,7 +2438,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 108,
+   "id": 116,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2291,7 +2459,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 109,
+   "id": 117,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2312,7 +2480,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 110,
+   "id": 118,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2333,7 +2501,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 111,
+   "id": 119,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2354,7 +2522,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 112,
+   "id": 120,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2375,7 +2543,7 @@
    "loggedResult": "W"
   },
   {
-   "id": 113,
+   "id": 121,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2396,7 +2564,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 114,
+   "id": 122,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2417,7 +2585,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 115,
+   "id": 123,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2438,7 +2606,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 116,
+   "id": 124,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2459,7 +2627,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 117,
+   "id": 125,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
@@ -2480,7 +2648,7 @@
    "loggedResult": "L"
   },
   {
-   "id": 118,
+   "id": 126,
    "date": "2026-10-22",
    "agent": "Sofa",
    "sport": "NBA",
